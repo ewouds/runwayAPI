@@ -68,22 +68,26 @@ The test suite covers:
 ### Current Coverage Areas
 
 1. **Main Express App** (`main.test.js`)
+
    - Route handling
    - Middleware functionality
    - Basic response structure
 
 2. **Runway API** (`api/runway.test.js`)
+
    - Airport data retrieval and processing
    - METAR data parsing
    - Error handling for various failure scenarios
    - Data validation and transformation
 
 3. **Download Helper** (`helpers/downloadData.test.js`)
+
    - HTTP request handling
    - Error handling for network failures
    - Response processing
 
 4. **Integration Tests** (`integration.test.js`)
+
    - End-to-end request/response flows
    - Parameter handling
    - Error response formatting
@@ -105,10 +109,12 @@ The test suite uses comprehensive mock data located in `__tests__/__mocks__/mock
 ## Environment Variables
 
 Test environment variables are defined in:
+
 - `__tests__/setup.js` - Global test setup
 - `.env.test` - Test-specific environment configuration
 
 Required environment variables for testing:
+
 - `NODE_ENV=test`
 - `SERVER_PORT_RUNWAY=3001`
 - `AIRPORTDB_API_TOKEN=test-token-12345`
@@ -140,17 +146,17 @@ When adding new functionality:
 ### Example Test Structure
 
 ```javascript
-describe('Feature Name', () => {
+describe("Feature Name", () => {
   beforeEach(() => {
     // Setup for each test
   });
 
-  describe('Specific functionality', () => {
-    it('should do something specific', () => {
+  describe("Specific functionality", () => {
+    it("should do something specific", () => {
       // Test implementation
     });
 
-    it('should handle error case', () => {
+    it("should handle error case", () => {
       // Error case test
     });
   });

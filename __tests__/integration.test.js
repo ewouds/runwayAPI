@@ -1,20 +1,20 @@
-const request = require('supertest');
-const express = require('express');
-const cors = require('cors');
-const runwayAPI = require('../api/runway.cjs');
-const downloadFile = require('../helpers/downloadData.cjs');
-const { mockAirportData, mockMetarData } = require('./__mocks__/mockData');
+const request = require("supertest");
+const express = require("express");
+const cors = require("cors");
+const runwayAPI = require("../api/runway.cjs");
+const downloadFile = require("../helpers/downloadData.cjs");
+const { mockAirportData, mockMetarData } = require("./__mocks__/mockData");
 
 // Mock the downloadFile helper for integration tests
-jest.mock('../helpers/downloadData.cjs');
+jest.mock("../helpers/downloadData.cjs");
 
-describe('Runway API Integration Tests', () => {
+describe("Runway API Integration Tests", () => {
   let app;
 
   beforeAll(() => {
     // Set up the Express app exactly like in main.cjs
     app = express();
-    
+
     if (process.env.NODE_ENV === "development") {
       app.use(cors());
     }
@@ -36,19 +36,15 @@ describe('Runway API Integration Tests', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.AIRPORTDB_API_TOKEN = 'test-token';
+    process.env.AIRPORTDB_API_TOKEN = "test-token";
   });
 
-  describe('Full API workflow', () => {
-    it('should handle complete successful request flow', async () => {
+  describe("Full API workflow", () => {
+    it("should handle complete successful request flow", async () => {
       // Mock both API calls
-      downloadFile
-        .mockResolvedValueOnce(JSON.stringify(mockAirportData.valid))
-        .mockResolvedValueOnce(mockMetarData.valid);
+      downloadFile.mockResolvedValueOnce(JSON.stringify(mockAirportData.valid)).mockResolvedValueOnce(mockMetarData.valid);
 
-      const response = await request(app)
-        .get('/api/v1/runway/KJFK')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/KJFK").expect(200);
 
       // Verify complete response structure
       expect(response.body).toMatchObject({
@@ -66,143 +62,117 @@ describe('Runway API Integration Tests', () => {
             he_heading_degT: 223.1,
             le_ils: null,
             he_ils: "ILS",
-            surface: "ASPH"
-          })
+            surface: "ASPH",
+          }),
         ]),
         elevation: 4, // 13 ft * 0.3048 ≈ 4m
         wind_direction: expect.any(Number),
         wind_speed: expect.any(Number),
         station: expect.objectContaining({
           icao_code: "KJFK",
-          distance: 0
+          distance: 0,
         }),
         time: expect.any(String),
         metar: mockMetarData.valid,
-        metarData: expect.any(Object)
+        metarData: expect.any(Object),
       });
     });
 
-    it('should handle METAR provider parameter', async () => {
-      downloadFile
-        .mockResolvedValueOnce(JSON.stringify(mockAirportData.valid))
-        .mockResolvedValueOnce(mockMetarData.valid);
+    it("should handle METAR provider parameter", async () => {
+      downloadFile.mockResolvedValueOnce(JSON.stringify(mockAirportData.valid)).mockResolvedValueOnce(mockMetarData.valid);
 
-      const response = await request(app)
-        .get('/api/v1/runway/KJFK?metarProvider=vatsim')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/KJFK?metarProvider=vatsim").expect(200);
 
-      expect(response.body.icao).toBe('KJFK');
-      
+      expect(response.body.icao).toBe("KJFK");
+
       // Verify that the correct METAR URL was called
-      expect(downloadFile).toHaveBeenCalledWith(
-        expect.stringContaining('metar.vatsim.net/KJFK')
-      );
+      expect(downloadFile).toHaveBeenCalledWith(expect.stringContaining("metar.vatsim.net/KJFK"));
     });
 
-    it('should handle case-insensitive ICAO codes', async () => {
-      downloadFile
-        .mockResolvedValueOnce(JSON.stringify(mockAirportData.valid))
-        .mockResolvedValueOnce(mockMetarData.valid);
+    it("should handle case-insensitive ICAO codes", async () => {
+      downloadFile.mockResolvedValueOnce(JSON.stringify(mockAirportData.valid)).mockResolvedValueOnce(mockMetarData.valid);
 
       const response = await request(app)
-        .get('/api/v1/runway/kjfk') // lowercase
+        .get("/api/v1/runway/kjfk") // lowercase
         .expect(200);
 
-      expect(response.body.icao).toBe('KJFK'); // Should be uppercase in response
+      expect(response.body.icao).toBe("KJFK"); // Should be uppercase in response
     });
   });
 
-  describe('Error scenarios', () => {
-    it('should return appropriate error for non-existent airport', async () => {
-      downloadFile.mockResolvedValueOnce('{}');
+  describe("Error scenarios", () => {
+    it("should return appropriate error for non-existent airport", async () => {
+      downloadFile.mockResolvedValueOnce("{}");
 
-      const response = await request(app)
-        .get('/api/v1/runway/XXXX')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/XXXX").expect(200);
 
       expect(response.body).toEqual({
         code: 2,
-        error: "Can't find airport XXXX data. Try to search a nearest bigger airport"
+        error: "Can't find airport XXXX data. Try to search a nearest bigger airport",
       });
     });
 
-    it('should handle network failures gracefully', async () => {
-      downloadFile.mockRejectedValue(new Error('Network timeout'));
+    it("should handle network failures gracefully", async () => {
+      downloadFile.mockRejectedValue(new Error("Network timeout"));
 
-      const response = await request(app)
-        .get('/api/v1/runway/KJFK')
-        .expect(500);
+      const response = await request(app).get("/api/v1/runway/KJFK").expect(500);
 
-      expect(response.text).toBe('Internal server error');
+      expect(response.text).toBe("Internal server error");
     });
 
-    it('should handle airports with no runway data', async () => {
+    it("should handle airports with no runway data", async () => {
       downloadFile.mockResolvedValueOnce(JSON.stringify(mockAirportData.noRunways));
 
-      const response = await request(app)
-        .get('/api/v1/runway/TEST')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/TEST").expect(200);
 
       expect(response.body).toEqual({
         code: 3,
-        error: "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport"
+        error: "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport",
       });
     });
 
-    it('should handle airports with invalid runway data', async () => {
+    it("should handle airports with invalid runway data", async () => {
       downloadFile.mockResolvedValueOnce(JSON.stringify(mockAirportData.invalidRunways));
 
-      const response = await request(app)
-        .get('/api/v1/runway/TEST2')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/TEST2").expect(200);
 
       expect(response.body).toEqual({
         code: 4,
-        error: "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport"
+        error: "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport",
       });
     });
   });
 
-  describe('Edge cases', () => {
-    it('should handle missing METAR data', async () => {
-      downloadFile
-        .mockResolvedValueOnce(JSON.stringify(mockAirportData.valid))
-        .mockResolvedValueOnce(''); // Empty METAR
+  describe("Edge cases", () => {
+    it("should handle missing METAR data", async () => {
+      downloadFile.mockResolvedValueOnce(JSON.stringify(mockAirportData.valid)).mockResolvedValueOnce(""); // Empty METAR
 
-      const response = await request(app)
-        .get('/api/v1/runway/KJFK')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/KJFK").expect(200);
 
-      expect(response.body.icao).toBe('KJFK');
-      expect(response.body.metar).toContain('KJFK'); // Should have fallback METAR
+      expect(response.body.icao).toBe("KJFK");
+      expect(response.body.metar).toContain("KJFK"); // Should have fallback METAR
     });
 
-    it('should handle different weather station for METAR', async () => {
+    it("should handle different weather station for METAR", async () => {
       const airportWithDifferentStation = {
         ...mockAirportData.valid,
         station: {
           icao_code: "KLGA",
-          distance: 5
-        }
+          distance: 5,
+        },
       };
 
-      downloadFile
-        .mockResolvedValueOnce(JSON.stringify(airportWithDifferentStation))
-        .mockResolvedValueOnce(mockMetarData.valid);
+      downloadFile.mockResolvedValueOnce(JSON.stringify(airportWithDifferentStation)).mockResolvedValueOnce(mockMetarData.valid);
 
-      const response = await request(app)
-        .get('/api/v1/runway/KJFK')
-        .expect(200);
+      const response = await request(app).get("/api/v1/runway/KJFK").expect(200);
 
       expect(response.body.station).toEqual({
         icao_code: "KLGA",
-        distance: 5
+        distance: 5,
       });
 
       // Should fetch METAR from the station ICAO, not airport ICAO
-      expect(downloadFile).toHaveBeenCalledWith(
-        expect.stringContaining('KLGA')
-      );
+      expect(downloadFile).toHaveBeenCalledWith(expect.stringContaining("KLGA"));
     });
   });
 });

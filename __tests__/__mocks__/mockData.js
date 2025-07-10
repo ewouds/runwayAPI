@@ -8,7 +8,7 @@ const mockAirportData = {
     elevation_ft: 13,
     station: {
       icao_code: "KJFK",
-      distance: 0
+      distance: 0,
     },
     runways: [
       {
@@ -21,7 +21,7 @@ const mockAirportData = {
         he_heading_degT: "223.1",
         le_ils: null,
         he_ils: "ILS",
-        surface: "ASPH"
+        surface: "ASPH",
       },
       {
         width_ft: "150",
@@ -33,9 +33,9 @@ const mockAirportData = {
         he_heading_degT: "223.1",
         le_ils: "ILS",
         he_ils: "ILS",
-        surface: "ASPH"
-      }
-    ]
+        surface: "ASPH",
+      },
+    ],
   },
   noRunways: {
     ident: "TEST",
@@ -43,7 +43,7 @@ const mockAirportData = {
     name: "Test Airport",
     home_link: "https://test.com",
     elevation_ft: 100,
-    runways: []
+    runways: [],
   },
   invalidRunways: {
     ident: "TEST2",
@@ -57,19 +57,19 @@ const mockAirportData = {
         length_ft: "invalid",
         le_ident: "",
         he_ident: "",
-        surface: "ASPH"
-      }
-    ]
+        surface: "ASPH",
+      },
+    ],
   },
-  notFound: null
+  notFound: null,
 };
 
 const mockMetarData = {
   valid: "KJFK 101851Z 28008KT 10SM FEW250 24/18 A3012 RMK AO2 SLP198 T02440183",
-  empty: ""
+  empty: "",
 };
 
 module.exports = {
   mockAirportData,
-  mockMetarData
+  mockMetarData,
 };
