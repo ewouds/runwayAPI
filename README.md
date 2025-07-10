@@ -21,7 +21,7 @@ The Runway API fetches and combines airport runway data from AirportDB with curr
 ### Prerequisites
 
 - Node.js 14+
-- npm or yarn
+- npm
 - AirportDB API token (sign up at [airportdb.io](https://airportdb.io))
 
 ### Installation
