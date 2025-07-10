@@ -3,13 +3,13 @@ name: Runway API CI/CD
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - server/runwayAPI/**
       - .github/workflows/runway-api-ci.yml
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - server/runwayAPI/**
       - .github/workflows/runway-api-ci.yml
