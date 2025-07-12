@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - server/runwayAPI/**
+      - '**'
       - .github/workflows/runway-api-ci.yml
   pull_request:
     branches:
       - main
     paths:
-      - server/runwayAPI/**
+      - '**'
       - .github/workflows/runway-api-ci.yml
 
 permissions:
@@ -50,7 +50,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./server/runwayAPI
+          context: .
           push: true
           build-args: |
             BUILD_VERSION=${{ env.BUILD_VERSION }}
