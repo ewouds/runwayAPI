@@ -1,12 +1,10 @@
 // Mock the request module before requiring the downloadFile
-jest.mock("request", () => {
-  return {
-    get: jest.fn(),
-  };
-});
+jest.mock("axios", () => ({
+  get: jest.fn(),
+}));
 
 const downloadFile = require("../../helpers/downloadData.cjs");
-const request = require("request");
+const axios = require("axios");
 
 describe("downloadData helper", () => {
   beforeEach(() => {
@@ -17,25 +15,20 @@ describe("downloadData helper", () => {
     const mockUrl = "https://example.com/data";
     const mockResponse = "mock response data";
 
-    // Mock successful request
-    request.get.mockImplementation((url, callback) => {
-      expect(url).toBe(mockUrl);
-      callback(null, {}, mockResponse);
-    });
+    // Mock successful axios response
+    axios.get.mockResolvedValue({ data: mockResponse });
 
     const result = await downloadFile(mockUrl);
     expect(result).toBe(mockResponse);
-    expect(request.get).toHaveBeenCalledWith(mockUrl, expect.any(Function));
+    expect(axios.get).toHaveBeenCalledWith(mockUrl);
   });
 
   it("should reject promise on request error", async () => {
     const mockUrl = "https://example.com/error";
     const mockError = new Error("Network error");
 
-    // Mock failed request
-    request.get.mockImplementation((url, callback) => {
-      callback(mockError, null, null);
-    });
+    // Mock failed axios
+    axios.get.mockRejectedValue(mockError);
 
     await expect(downloadFile(mockUrl)).rejects.toThrow("Network error");
   });
@@ -43,9 +36,7 @@ describe("downloadData helper", () => {
   it("should handle empty response", async () => {
     const mockUrl = "https://example.com/empty";
 
-    request.get.mockImplementation((url, callback) => {
-      callback(null, {}, "");
-    });
+    axios.get.mockResolvedValue({ data: "" });
 
     const result = await downloadFile(mockUrl);
     expect(result).toBe("");

@@ -1,12 +1,12 @@
-const request = require('request');
+const axios = require("axios");
 
-const downloadFile = (url) => {
-    return new Promise((resolve, reject) => {
-        request.get(url, (error, _response, body) => {
-            if (error) return reject(error);
-            return resolve(body);
-        });
-    });
+const downloadFile = async (url) => {
+  try {
+    const res = await axios.get(url);
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
 };
 
 module.exports = downloadFile;
