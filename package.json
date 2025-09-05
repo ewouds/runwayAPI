@@ -10,7 +10,11 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
-    "test:ci": "jest --ci --coverage --watchAll=false"
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "audit:ci": "npm audit --omit=dev --audit-level=high",
+    "audit:full": "npm audit",
+    "scan:osv": "npx --yes osv-scanner --lockfile=package-lock.json",
+    "deps:outdated": "npm outdated || true"
   },
   "dependencies": {
     "@azure/ai-form-recognizer": "^5.0.0",
