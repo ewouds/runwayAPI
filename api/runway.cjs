@@ -28,6 +28,7 @@ const runwayAPI = async (req, res) => {
     const metarProvider = req.query.metarProvider || "aviationweather";
     const airportUrl = createAirportUrl(icao);
     const airportDataRaw = await downloadFile(airportUrl);
+    console.debug(airportDataRaw);
     const airportData = JSON.parse(airportDataRaw);
     console.debug(`Airport data for ${icao.toUpperCase()}:`, airportData);
 
@@ -116,7 +117,9 @@ const runwayAPI = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error in runwayAPI for ${req.params.icao}:`);
+
     console.error(err);
+
     return res.status(500).send("Internal server error");
   }
 };

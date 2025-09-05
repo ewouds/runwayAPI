@@ -20,7 +20,7 @@ describe("downloadData helper", () => {
 
     const result = await downloadFile(mockUrl);
     expect(result).toBe(mockResponse);
-    expect(axios.get).toHaveBeenCalledWith(mockUrl);
+    expect(axios.get).toHaveBeenCalledWith(mockUrl, expect.objectContaining({ responseType: "text" }));
   });
 
   it("should reject promise on request error", async () => {
