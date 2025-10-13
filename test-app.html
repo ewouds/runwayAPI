@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -120,7 +121,8 @@
             color: #333;
         }
 
-        .input-group input, .input-group select {
+        .input-group input,
+        .input-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -129,7 +131,8 @@
             transition: border-color 0.3s;
         }
 
-        .input-group input:focus, .input-group select:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             outline: none;
             border-color: #2a5298;
         }
@@ -199,7 +202,7 @@
 
         .airport-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .airport-code {
@@ -295,8 +298,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .tabs {
@@ -323,7 +331,7 @@
         .tab.active {
             background: white;
             color: #2a5298;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .tab-content {
@@ -383,15 +391,15 @@
             .form-group {
                 flex-direction: column;
             }
-            
+
             .input-group {
                 min-width: 100%;
             }
-            
+
             .results-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .stats {
                 flex-direction: column;
                 gap: 15px;
@@ -399,6 +407,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -425,7 +434,8 @@
             <div class="test-section">
                 <div class="section-header">
                     <div class="section-title">🔍 Search Endpoints</div>
-                    <div class="section-description">Test advanced search capabilities with fuzzy matching and typo tolerance</div>
+                    <div class="section-description">Test advanced search capabilities with fuzzy matching and typo
+                        tolerance</div>
                 </div>
                 <div class="section-content">
                     <div class="tabs">
@@ -439,9 +449,12 @@
                     <!-- Basic Search -->
                     <div id="search-basic" class="tab-content active">
                         <div class="quick-tests">
-                            <span class="quick-test-btn" onclick="fillBasicSearch('London', 5, 'simple')">London (Simple)</span>
-                            <span class="quick-test-btn" onclick="fillBasicSearch('Paris', 3, 'full')">Paris (Full)</span>
-                            <span class="quick-test-btn" onclick="fillBasicSearch('Heathrow', 5, 'simple')">Heathrow</span>
+                            <span class="quick-test-btn" onclick="fillBasicSearch('London', 5, 'simple')">London
+                                (Simple)</span>
+                            <span class="quick-test-btn" onclick="fillBasicSearch('Paris', 3, 'full')">Paris
+                                (Full)</span>
+                            <span class="quick-test-btn"
+                                onclick="fillBasicSearch('Heathrow', 5, 'simple')">Heathrow</span>
                             <span class="quick-test-btn" onclick="fillBasicSearch('Munich', 5, 'simple')">Munich</span>
                         </div>
                         <div class="form-group">
@@ -477,8 +490,10 @@
                         <div class="quick-tests">
                             <span class="quick-test-btn" onclick="fillFuzzySearch('EGKL', true)">EGKL → EGLL</span>
                             <span class="quick-test-btn" onclick="fillFuzzySearch('LFGP', true)">LFGP → LFPG</span>
-                            <span class="quick-test-btn" onclick="fillFuzzySearch('Frankfrt', true)">Frankfrt → Frankfurt</span>
-                            <span class="quick-test-btn" onclick="fillFuzzySearch('Myunikh', true)">Myunikh → Munich</span>
+                            <span class="quick-test-btn" onclick="fillFuzzySearch('Frankfrt', true)">Frankfrt →
+                                Frankfurt</span>
+                            <span class="quick-test-btn" onclick="fillFuzzySearch('Myunikh', true)">Myunikh →
+                                Munich</span>
                         </div>
                         <div class="form-group">
                             <div class="input-group">
@@ -587,7 +602,8 @@
             <div class="test-section">
                 <div class="section-header">
                     <div class="section-title">🏢 Airport Data Endpoints</div>
-                    <div class="section-description">Retrieve specific airport information and browse by various criteria</div>
+                    <div class="section-description">Retrieve specific airport information and browse by various
+                        criteria</div>
                 </div>
                 <div class="section-content">
                     <div class="tabs">
@@ -636,10 +652,13 @@
                     <!-- By Country -->
                     <div id="data-country" class="tab-content">
                         <div class="quick-tests">
-                            <span class="quick-test-btn" onclick="fillCountry('DE', 'large_airport', 15)">Germany (Large)</span>
+                            <span class="quick-test-btn" onclick="fillCountry('DE', 'large_airport', 15)">Germany
+                                (Large)</span>
                             <span class="quick-test-btn" onclick="fillCountry('FR', '', 20)">France (All)</span>
-                            <span class="quick-test-btn" onclick="fillCountry('GB', 'medium_airport', 10)">UK (Medium)</span>
-                            <span class="quick-test-btn" onclick="fillCountry('ES', 'large_airport', 8)">Spain (Large)</span>
+                            <span class="quick-test-btn" onclick="fillCountry('GB', 'medium_airport', 10)">UK
+                                (Medium)</span>
+                            <span class="quick-test-btn" onclick="fillCountry('ES', 'large_airport', 8)">Spain
+                                (Large)</span>
                         </div>
                         <div class="form-group">
                             <div class="input-group">
@@ -712,19 +731,25 @@
                     <!-- Nearby Airports -->
                     <div id="geo-nearby" class="tab-content active">
                         <div class="quick-tests">
-                            <span class="quick-test-btn" onclick="fillNearby(51.5074, -0.1278, 1.0, 10)">London Area</span>
-                            <span class="quick-test-btn" onclick="fillNearby(48.8566, 2.3522, 1.5, 15)">Paris Area</span>
-                            <span class="quick-test-btn" onclick="fillNearby(52.5200, 13.4050, 1.0, 8)">Berlin Area</span>
-                            <span class="quick-test-btn" onclick="fillNearby(41.9028, 12.4964, 2.0, 12)">Rome Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(51.5074, -0.1278, 1.0, 10)">London
+                                Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(48.8566, 2.3522, 1.5, 15)">Paris
+                                Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(52.5200, 13.4050, 1.0, 8)">Berlin
+                                Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(41.9028, 12.4964, 2.0, 12)">Rome
+                                Area</span>
                         </div>
                         <div class="form-group">
                             <div class="input-group">
                                 <label>Latitude</label>
-                                <input type="number" id="geo-lat" placeholder="51.5074" step="0.0001" min="-90" max="90">
+                                <input type="number" id="geo-lat" placeholder="51.5074" step="0.0001" min="-90"
+                                    max="90">
                             </div>
                             <div class="input-group">
                                 <label>Longitude</label>
-                                <input type="number" id="geo-lng" placeholder="-0.1278" step="0.0001" min="-180" max="180">
+                                <input type="number" id="geo-lng" placeholder="-0.1278" step="0.0001" min="-180"
+                                    max="180">
                             </div>
                             <div class="input-group">
                                 <label>Radius (degrees)</label>
@@ -792,15 +817,15 @@
             document.querySelectorAll(`#${section}-${tab}`).forEach(content => {
                 content.parentElement.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
             });
-            
+
             // Remove active class from all tabs in the section
             document.querySelectorAll(`#${section}-${tab}`).forEach(content => {
                 content.parentElement.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             });
-            
+
             // Show selected tab content
             document.getElementById(`${section}-${tab}`).classList.add('active');
-            
+
             // Mark selected tab as active
             event.target.classList.add('active');
         }
@@ -866,7 +891,7 @@
         async function makeRequest(url, resultsId) {
             const resultsDiv = document.getElementById(resultsId);
             const startTime = Date.now();
-            
+
             resultsDiv.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
@@ -878,7 +903,7 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 const responseTime = Date.now() - startTime;
-                
+
                 displayResults(data, responseTime, url, resultsDiv);
             } catch (error) {
                 resultsDiv.innerHTML = `
@@ -948,7 +973,7 @@
             }
 
             html += '<div class="airport-details">';
-            
+
             if (airport.iata_code) {
                 html += `<div class="detail-item"><span class="detail-label">IATA:</span><span class="detail-value">${airport.iata_code}</span></div>`;
             }
@@ -1035,12 +1060,12 @@
             const limit = document.getElementById('basic-limit').value;
             const format = document.getElementById('basic-format').value;
             const fuzzy = document.getElementById('basic-fuzzy').value;
-            
+
             if (!query) {
                 alert('Please enter a search term');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/search?q=${encodeURIComponent(query)}&limit=${limit}&format=${format}&fuzzy=${fuzzy}`;
             await makeRequest(url, 'basic-results');
         }
@@ -1050,12 +1075,12 @@
             const limit = document.getElementById('fuzzy-limit').value;
             const details = document.getElementById('fuzzy-details').value;
             const format = document.getElementById('fuzzy-format').value;
-            
+
             if (!query) {
                 alert('Please enter a search term');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/fuzzy?q=${encodeURIComponent(query)}&limit=${limit}&details=${details}&format=${format}`;
             await makeRequest(url, 'fuzzy-results');
         }
@@ -1064,12 +1089,12 @@
             const query = document.getElementById('city-query').value;
             const limit = document.getElementById('city-limit').value;
             const format = document.getElementById('city-format').value;
-            
+
             if (!query) {
                 alert('Please enter a city name');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/city?q=${encodeURIComponent(query)}&limit=${limit}&format=${format}&fuzzy=true`;
             await makeRequest(url, 'city-results');
         }
@@ -1077,12 +1102,12 @@
         async function testSmartIcao() {
             const query = document.getElementById('icao-query').value;
             const limit = document.getElementById('icao-limit').value;
-            
+
             if (!query) {
                 alert('Please enter an ICAO code');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/smart-icao?q=${encodeURIComponent(query)}&limit=${limit}`;
             await makeRequest(url, 'icao-results');
         }
@@ -1090,36 +1115,36 @@
         async function testSuggestions() {
             const query = document.getElementById('suggestions-query').value;
             const limit = document.getElementById('suggestions-limit').value;
-            
+
             if (!query) {
                 alert('Please enter a partial search term');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/suggestions?q=${encodeURIComponent(query)}&limit=${limit}`;
             await makeRequest(url, 'suggestions-results');
         }
 
         async function testGetByIcao() {
             const code = document.getElementById('data-icao-code').value;
-            
+
             if (!code) {
                 alert('Please enter an ICAO code');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/icao/${code.toUpperCase()}`;
             await makeRequest(url, 'data-icao-results');
         }
 
         async function testGetByIata() {
             const code = document.getElementById('data-iata-code').value;
-            
+
             if (!code) {
                 alert('Please enter an IATA code');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/iata/${code.toUpperCase()}`;
             await makeRequest(url, 'data-iata-results');
         }
@@ -1128,22 +1153,22 @@
             const code = document.getElementById('data-country-code').value;
             const type = document.getElementById('data-country-type').value;
             const limit = document.getElementById('data-country-limit').value;
-            
+
             if (!code) {
                 alert('Please enter a country code');
                 return;
             }
-            
+
             let url = `${API_BASE}/api/v1/airports/country/${code.toUpperCase()}?limit=${limit}`;
             if (type) url += `&type=${type}`;
-            
+
             await makeRequest(url, 'data-country-results');
         }
 
         async function testGetByType() {
             const type = document.getElementById('data-type-select').value;
             const limit = document.getElementById('data-type-limit').value;
-            
+
             const url = `${API_BASE}/api/v1/airports/type/${type}?limit=${limit}`;
             await makeRequest(url, 'data-type-results');
         }
@@ -1153,12 +1178,12 @@
             const lng = document.getElementById('geo-lng').value;
             const radius = document.getElementById('geo-radius').value;
             const limit = document.getElementById('geo-limit').value;
-            
+
             if (!lat || !lng) {
                 alert('Please enter latitude and longitude');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/airports/nearby?lat=${lat}&lng=${lng}&radius=${radius}&limit=${limit}`;
             await makeRequest(url, 'geo-nearby-results');
         }
@@ -1175,12 +1200,12 @@
 
         async function testRunwayWeather() {
             const icao = document.getElementById('runway-icao').value;
-            
+
             if (!icao) {
                 alert('Please enter an ICAO code');
                 return;
             }
-            
+
             const url = `${API_BASE}/api/v1/runway/${icao.toUpperCase()}`;
             await makeRequest(url, 'runway-results');
         }
@@ -1191,4 +1216,5 @@
         });
     </script>
 </body>
+
 </html>

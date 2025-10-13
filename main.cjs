@@ -1,11 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const YAML = require('js-yaml');
-const fs = require('fs');
-const path = require('path');
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
+const YAML = require("js-yaml");
+const fs = require("fs");
+const path = require("path");
 const runwayAPI = require("./api/runway.cjs");
 const airportsAPI = require("./api/airports.cjs");
 
@@ -19,22 +19,22 @@ if (process.env.NODE_ENV === "development") {
 // Load OpenAPI specification
 let swaggerSpec;
 try {
-  const yamlFile = fs.readFileSync(path.join(__dirname, 'docs', 'openapi.yaml'), 'utf8');
+  const yamlFile = fs.readFileSync(path.join(__dirname, "docs", "openapi.yaml"), "utf8");
   swaggerSpec = YAML.load(yamlFile);
   // Update server URL with current host
   swaggerSpec.servers[0].url = `http://localhost:${port}`;
 } catch (error) {
-  console.error('Failed to load OpenAPI spec:', error.message);
+  console.error("Failed to load OpenAPI spec:", error.message);
   // Fallback basic spec
   swaggerSpec = {
-    openapi: '3.0.3',
+    openapi: "3.0.3",
     info: {
-      title: 'RunwayAPI',
-      version: '1.0.0',
-      description: 'European Airports Database API'
+      title: "RunwayAPI",
+      version: "1.0.0",
+      description: "European Airports Database API",
     },
     servers: [{ url: `http://localhost:${port}` }],
-    paths: {}
+    paths: {},
   };
 }
 
@@ -56,24 +56,27 @@ app.use(
 );
 
 // OpenAPI Documentation endpoints
-app.use('/docs', swaggerUi.serve);
-app.get('/docs', swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: "RunwayAPI Documentation",
-  customfavIcon: "/favicon.ico",
-  swaggerOptions: {
-    explorer: true,
-    displayRequestDuration: true,
-    docExpansion: 'none',
-    filter: true,
-    showExtensions: true,
-    showCommonExtensions: true,
-    tryItOutEnabled: true
-  }
-}));
+app.use("/docs", swaggerUi.serve);
+app.get(
+  "/docs",
+  swaggerUi.setup(swaggerSpec, {
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: "RunwayAPI Documentation",
+    customfavIcon: "/favicon.ico",
+    swaggerOptions: {
+      explorer: true,
+      displayRequestDuration: true,
+      docExpansion: "none",
+      filter: true,
+      showExtensions: true,
+      showCommonExtensions: true,
+      tryItOutEnabled: true,
+    },
+  })
+);
 
 // Raw OpenAPI spec endpoint
-app.get('/openapi.json', (req, res) => {
+app.get("/openapi.json", (req, res) => {
   res.json(swaggerSpec);
 });
 
@@ -112,7 +115,7 @@ app.get("/", (req, res) => {
     documentation: {
       openapi: "/docs - Interactive OpenAPI documentation",
       demo: "/demo - Interactive HTML demo for airport search",
-      testApp: "/test - Comprehensive API test application"
+      testApp: "/test - Comprehensive API test application",
     },
     endpoints: {
       runway: "/api/v1/runway/:icao - Get runway data for an airport",
@@ -134,8 +137,8 @@ app.get("/", (req, res) => {
     database: {
       totalAirports: 12228,
       countries: 52,
-      features: ["Fuzzy Search", "Typo Tolerance", "Geographic Search", "Real-time Weather"]
-    }
+      features: ["Fuzzy Search", "Typo Tolerance", "Geographic Search", "Real-time Weather"],
+    },
   });
 });
 

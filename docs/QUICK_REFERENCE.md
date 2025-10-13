@@ -1,6 +1,7 @@
 # RunwayAPI Quick Reference 🚀
 
 ## 🔗 Base URL
+
 ```
 http://localhost:3002
 ```
@@ -8,23 +9,29 @@ http://localhost:3002
 ## 🎯 Most Used Endpoints
 
 ### Simple City Search (Mobile-Friendly)
+
 ```bash
 GET /api/v1/airports/city?q=London&format=simple&limit=5
 ```
+
 **Response**: `[{icao_code, city, country}]` - 70% smaller than full format
 
 ### Fuzzy Search with Typo Tolerance
-```bash  
+
+```bash
 GET /api/v1/airports/fuzzy?q=EGKL&details=true&limit=3
 ```
+
 **Handles**: EGKL → EGLL, Frankfrt → Frankfurt, LFGP → LFPG
 
 ### Get Specific Airport
+
 ```bash
 GET /api/v1/airports/icao/EGLL
 ```
 
 ### Find Nearby Airports
+
 ```bash
 GET /api/v1/airports/nearby?lat=51.5074&lng=-0.1278&radius=0.5&limit=5
 ```
@@ -32,6 +39,7 @@ GET /api/v1/airports/nearby?lat=51.5074&lng=-0.1278&radius=0.5&limit=5
 ## 📊 Response Format
 
 ### Success (code: 0)
+
 ```json
 {
   "code": 0,
@@ -45,6 +53,7 @@ GET /api/v1/airports/nearby?lat=51.5074&lng=-0.1278&radius=0.5&limit=5
 ```
 
 ### Error (code: 1)
+
 ```json
 {
   "code": 1,
@@ -55,12 +64,12 @@ GET /api/v1/airports/nearby?lat=51.5074&lng=-0.1278&radius=0.5&limit=5
 
 ## 🎛️ Key Parameters
 
-| Parameter | Values | Description |
-|-----------|--------|-------------|
-| `format` | `simple`, `full` | Response size (simple = 70% smaller) |
-| `fuzzy` | `true`, `false` | Enable typo tolerance |
-| `limit` | `1-100` | Max results |
-| `details` | `true`, `false` | Include fuzzy match scoring |
+| Parameter | Values           | Description                          |
+| --------- | ---------------- | ------------------------------------ |
+| `format`  | `simple`, `full` | Response size (simple = 70% smaller) |
+| `fuzzy`   | `true`, `false`  | Enable typo tolerance                |
+| `limit`   | `1-100`          | Max results                          |
+| `details` | `true`, `false`  | Include fuzzy match scoring          |
 
 ## 🔍 Search Capabilities
 
@@ -69,19 +78,17 @@ GET /api/v1/airports/nearby?lat=51.5074&lng=-0.1278&radius=0.5&limit=5
 ✅ **Airport Names**: Heathrow, Charles de Gaulle  
 ✅ **Typo Tolerance**: Frankfrt → Frankfurt  
 ✅ **Character Swaps**: LFGP → LFPG  
-✅ **Partial Matches**: EGL* → All UK airports starting with EGL
+✅ **Partial Matches**: EGL\* → All UK airports starting with EGL
 
 ## ⚡ Quick JavaScript Example
 
 ```javascript
 // Simple city search for mobile apps
-const response = await fetch(
-  'http://localhost:3002/api/v1/airports/city?q=London&format=simple&limit=3'
-);
+const response = await fetch("http://localhost:3002/api/v1/airports/city?q=London&format=simple&limit=3");
 const data = await response.json();
 
 if (data.code === 0) {
-  data.data.airports.forEach(airport => {
+  data.data.airports.forEach((airport) => {
     console.log(`${airport.icao_code} - ${airport.city}, ${airport.country}`);
   });
 }
@@ -95,10 +102,10 @@ import requests
 def search_airports(city, limit=5):
     url = f"http://localhost:3002/api/v1/airports/city"
     params = {"q": city, "format": "simple", "limit": limit, "fuzzy": "true"}
-    
+
     response = requests.get(url, params=params)
     data = response.json()
-    
+
     return data['data']['airports'] if data['code'] == 0 else []
 
 # Usage
@@ -110,7 +117,7 @@ for airport in airports:
 ## 🚀 Performance Tips
 
 - **Use `format=simple`** for mobile apps (70% bandwidth savings)
-- **Enable `fuzzy=true`** for better user experience  
+- **Enable `fuzzy=true`** for better user experience
 - **Set appropriate `limit`** to balance speed vs completeness
 - **Cache results** for repeated searches
 - **Use city search** for user-friendly interfaces
@@ -123,7 +130,7 @@ Perfect for apps with limited bandwidth:
 # Lightweight city search
 GET /api/v1/airports/city?q=Paris&format=simple&limit=3
 
-# Airport suggestions for autocomplete  
+# Airport suggestions for autocomplete
 GET /api/v1/airports/suggestions?q=LO&limit=5
 
 # Nearby airports with simple format
@@ -152,19 +159,20 @@ curl "http://localhost:3002/api/v1/airports/search?q=London&format=simple&limit=
 
 ## 🎯 Common Use Cases
 
-| Use Case | Endpoint | Parameters |
-|----------|----------|------------|
-| Mobile airport picker | `/airports/city` | `format=simple, fuzzy=true` |
-| Search autocomplete | `/airports/suggestions` | `limit=8` |
-| Airport details page | `/airports/icao/{code}` | - |
-| Map integration | `/airports/nearby` | `lat, lng, radius` |
-| Country browsing | `/airports/country/{code}` | `type=large_airport` |
+| Use Case              | Endpoint                   | Parameters                  |
+| --------------------- | -------------------------- | --------------------------- |
+| Mobile airport picker | `/airports/city`           | `format=simple, fuzzy=true` |
+| Search autocomplete   | `/airports/suggestions`    | `limit=8`                   |
+| Airport details page  | `/airports/icao/{code}`    | -                           |
+| Map integration       | `/airports/nearby`         | `lat, lng, radius`          |
+| Country browsing      | `/airports/country/{code}` | `type=large_airport`        |
 
 ## 📚 Full Documentation
 
 - **Complete Guide**: `docs/INTEGRATION_GUIDE.md`
-- **Fuzzy Search**: `docs/FUZZY_SEARCH_SUMMARY.md`  
+- **Fuzzy Search**: `docs/FUZZY_SEARCH_SUMMARY.md`
 - **Format Options**: `docs/SIMPLE_FORMAT_GUIDE.md`
 
 ---
+
 **⚡ Start building in minutes!** 🛫
