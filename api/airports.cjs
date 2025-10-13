@@ -61,6 +61,12 @@ const searchAirports = async (req, res) => {
       results = await db.searchAirports(searchTerm, parseInt(limit));
     }
 
+    // If icao_code is null, use ident as icao_code value
+    results = results.map(airport => ({
+      ...airport,
+      icao_code: airport.icao_code || airport.ident || null
+    }));
+
     res.json({
       code: 0,
       message: "Search completed successfully",

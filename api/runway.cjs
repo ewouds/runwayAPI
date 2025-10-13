@@ -28,9 +28,9 @@ const runwayAPI = async (req, res) => {
     const metarProvider = req.query.metarProvider || "aviationweather";
     const airportUrl = createAirportUrl(icao);
     const airportDataRaw = await downloadFile(airportUrl);
-    console.debug(airportDataRaw);
+    //console.debug(airportDataRaw);
     const airportData = JSON.parse(airportDataRaw);
-    console.debug(`Airport data for ${icao.toUpperCase()}:`, airportData);
+    // console.debug(`Airport data for ${icao.toUpperCase()}:`, airportData);
 
     if (!airportData.ident) {
       console.error(`Can't find airport ${icao.toUpperCase()} data. Response: ${airportDataRaw}`);
@@ -83,11 +83,11 @@ const runwayAPI = async (req, res) => {
         error: `Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport`,
       });
     }
-    console.log(`station`, station);
+    //console.log(`station`, station);
     const metarUrl = createMetarUrl(metarProvider, station.icao_code);
-    console.debug(`Fetching METAR data from: ${metarUrl}`);
+    //console.debug(`Fetching METAR data from: ${metarUrl}`);
     let metar = await downloadFile(metarUrl);
-    console.debug(`METAR data for ${icao.toUpperCase()}:`, metar);
+    //console.debug(`METAR data for ${icao.toUpperCase()}:`, metar);
     if (!metar.trim()) {
       console.error(`Can't find airport ${icao.toUpperCase()} metar data. Response: ${metar}`);
       metar = `${icao.toUpperCase()} 000000Z AUTO 00000KT 9999 0/0 Q1013 `;

@@ -1,0 +1,553 @@
+# RunwayAPI HTTP Test Collection
+# Test all endpoints of the European Airports Database API
+# Use with VS Code REST Client extension or similar HTTP clients
+
+### Variables
+@baseUrl = http://localhost:3002
+@apiVersion = v1
+
+### ============================================================================
+### 📋 API Information & Welcome
+### ============================================================================
+
+### Get API Welcome & Overview
+GET {{baseUrl}}/
+Accept: application/json
+
+### Get Database Information
+GET {{baseUrl}}/api/{{apiVersion}}/airports/info
+Accept: application/json
+
+### Get OpenAPI Specification
+GET {{baseUrl}}/openapi.json
+Accept: application/json
+
+### ============================================================================
+### 🔍 SEARCH ENDPOINTS
+### ============================================================================
+
+### Basic Airport Search - London (Simple Format)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=Midd
+  &limit=5
+  &format=simple
+  &fuzzy=true
+Accept: application/json
+
+### Basic Airport Search - Paris (Full Format)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=Midd
+  &limit=3
+  &format=full
+  &fuzzy=true
+Accept: application/json
+
+### Basic Airport Search - Heathrow
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=Heathrow
+  &limit=5
+  &format=simple
+Accept: application/json
+
+### Basic Airport Search - Without Fuzzy
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=EGLL
+  &limit=3
+  &fuzzy=false
+Accept: application/json
+
+### ============================================================================
+### 🎯 FUZZY SEARCH - Typo Tolerance Testing
+### ============================================================================
+
+### Fuzzy Search - ICAO Character Transposition (EGKL → EGLL)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/fuzzy
+  ?q=EGKL
+  &details=true
+  &limit=5
+  &format=full
+Accept: application/json
+
+### Fuzzy Search - ICAO Character Swap (LFGP → LFPG)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/fuzzy
+  ?q=LFGP
+  &details=true
+  &limit=3
+  &format=full
+Accept: application/json
+
+### Fuzzy Search - City Name Typo (Frankfrt → Frankfurt)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/fuzzy
+  ?q=zwart
+  &details=true
+  &limit=20
+  &format=full
+Accept: application/json
+
+### Fuzzy Search - Phonetic Matching (Myunikh → Munich)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/fuzzy
+  ?q=Myunikh
+  &details=true
+  &limit=3
+  &format=simple
+Accept: application/json
+
+### Fuzzy Search - Simple Format (No Details)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/fuzzy
+  ?q=EGKL
+  &details=false
+  &limit=3
+  &format=simple
+Accept: application/json
+
+### ============================================================================
+### 🏙️ CITY-BASED SEARCH
+### ============================================================================
+
+### City Search - Munich
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=Zwart
+  &limit=5
+  &format=simple
+  &fuzzy=true
+Accept: application/json
+
+### City Search - Frankfurt with Typo
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=zwart
+  &limit=20
+  &fuzzy=true
+Accept: application/json
+
+### City Search - Amsterdam
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=Amsterdam
+  &limit=5
+  &format=simple
+Accept: application/json
+
+### City Search - Barcelona
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=Barcelona
+  &limit=3
+  &format=full
+Accept: application/json
+
+### City Search - London (Compare with basic search)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=London
+  &limit=8
+  &format=simple
+Accept: application/json
+
+### ============================================================================
+### 🎯 SMART ICAO SEARCH
+### ============================================================================
+
+### Smart ICAO - Character Transposition
+GET {{baseUrl}}/api/{{apiVersion}}/airports/smart-icao
+  ?q=EGKL
+  &limit=5
+Accept: application/json
+
+### Smart ICAO - Partial Match (EGL*)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/smart-icao
+  ?q=EGL
+  &limit=10
+Accept: application/json
+
+### Smart ICAO - Exact Match
+GET {{baseUrl}}/api/{{apiVersion}}/airports/smart-icao
+  ?q=LFPG
+  &limit=3
+Accept: application/json
+
+### Smart ICAO - German Airports (EDD*)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/smart-icao
+  ?q=EDD
+  &limit=8
+Accept: application/json
+
+### Smart ICAO - Spanish Airports (LE*)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/smart-icao
+  ?q=LE
+  &limit=6
+Accept: application/json
+
+### ============================================================================
+### 💡 SEARCH SUGGESTIONS (Autocomplete)
+### ============================================================================
+
+### Suggestions - "LO" (London airports)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/suggestions
+  ?q=LO
+  &limit=8
+Accept: application/json
+
+### Suggestions - "PAR" (Paris airports)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/suggestions
+  ?q=PAR
+  &limit=5
+Accept: application/json
+
+### Suggestions - "MU" (Munich airports)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/suggestions
+  ?q=MU
+  &limit=10
+Accept: application/json
+
+### Suggestions - "FR" (Frankfurt airports)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/suggestions
+  ?q=FR
+  &limit=6
+Accept: application/json
+
+### ============================================================================
+### 🏢 AIRPORT DATA BY ICAO
+### ============================================================================
+
+### Get Airport by ICAO - London Heathrow
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EGLL
+Accept: application/json
+
+### Get Airport by ICAO - Charles de Gaulle Paris
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/LFPG
+Accept: application/json
+
+### Get Airport by ICAO - Frankfurt
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EDDF
+Accept: application/json
+
+### Get Airport by ICAO - Munich
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EDDM
+Accept: application/json
+
+### Get Airport by ICAO - Amsterdam Schiphol
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EHAM
+Accept: application/json
+
+### Get Airport by ICAO - Madrid Barajas
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/LEMD
+Accept: application/json
+
+### Get Airport by ICAO - Invalid Code (Should return 404)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/XXXX
+Accept: application/json
+
+### ============================================================================
+### 🏢 AIRPORT DATA BY IATA
+### ============================================================================
+
+### Get Airport by IATA - London Heathrow
+GET {{baseUrl}}/api/{{apiVersion}}/airports/iata/LHR
+Accept: application/json
+
+### Get Airport by IATA - Charles de Gaulle Paris
+GET {{baseUrl}}/api/{{apiVersion}}/airports/iata/CDG
+Accept: application/json
+
+### Get Airport by IATA - Frankfurt
+GET {{baseUrl}}/api/{{apiVersion}}/airports/iata/FRA
+Accept: application/json
+
+### Get Airport by IATA - Munich
+GET {{baseUrl}}/api/{{apiVersion}}/airports/iata/MUC
+Accept: application/json
+
+### Get Airport by IATA - Amsterdam Schiphol
+GET {{baseUrl}}/api/{{apiVersion}}/airports/iata/AMS
+Accept: application/json
+
+### Get Airport by IATA - Invalid Code (Should return 404)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/iata/XXX
+Accept: application/json
+
+### ============================================================================
+### 🌍 AIRPORTS BY COUNTRY
+### ============================================================================
+
+### German Airports - Large Only
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/DE
+  ?limit=20
+  &type=large_airport
+Accept: application/json
+
+### French Airports - All Types
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/FR
+  ?limit=25
+Accept: application/json
+
+### UK Airports - Medium Only
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/GB
+  ?limit=15
+  &type=medium_airport
+Accept: application/json
+
+### Spanish Airports - Large Only
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/ES
+  ?limit=10
+  &type=large_airport
+Accept: application/json
+
+### Netherlands Airports - All Types
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/NL
+  ?limit=12
+Accept: application/json
+
+### Italian Airports - Large Only
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/IT
+  ?limit=15
+  &type=large_airport
+Accept: application/json
+
+### Invalid Country Code (Should return appropriate error)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/country/XX
+  ?limit=10
+Accept: application/json
+
+### ============================================================================
+### 🏗️ AIRPORTS BY TYPE
+### ============================================================================
+
+### Large Airports (Major Hubs)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/type/large_airport
+  ?limit=25
+Accept: application/json
+
+### Medium Airports (Regional)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/type/medium_airport
+  ?limit=30
+Accept: application/json
+
+### Small Airports (Local)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/type/small_airport
+  ?limit=40
+Accept: application/json
+
+### Heliports
+GET {{baseUrl}}/api/{{apiVersion}}/airports/type/heliport
+  ?limit=20
+Accept: application/json
+
+### Seaplane Bases
+GET {{baseUrl}}/api/{{apiVersion}}/airports/type/seaplane_base
+  ?limit=15
+Accept: application/json
+
+### ============================================================================
+### 📍 GEOGRAPHIC SEARCH - Nearby Airports
+### ============================================================================
+
+### Nearby Airports - London Area
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=51.5074
+  &lng=-0.1278
+  &radius=1.0
+  &limit=10
+Accept: application/json
+
+### Nearby Airports - Paris Area (Larger Radius)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=48.8566
+  &lng=2.3522
+  &radius=1.5
+  &limit=15
+Accept: application/json
+
+### Nearby Airports - Berlin Area
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=52.5200
+  &lng=13.4050
+  &radius=1.0
+  &limit=8
+Accept: application/json
+
+### Nearby Airports - Rome Area (Wide Search)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=41.9028
+  &lng=12.4964
+  &radius=2.0
+  &limit=12
+Accept: application/json
+
+### Nearby Airports - Barcelona Area
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=41.3851
+  &lng=2.1734
+  &radius=1.0
+  &limit=8
+Accept: application/json
+
+### Nearby Airports - Amsterdam Area
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=52.3676
+  &lng=4.9041
+  &radius=0.8
+  &limit=6
+Accept: application/json
+
+### ============================================================================
+### 📊 DATABASE STATISTICS
+### ============================================================================
+
+### Country Statistics (Complete Overview)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/stats/countries
+Accept: application/json
+
+### ============================================================================
+### 🛫 RUNWAY & WEATHER DATA
+### ============================================================================
+
+### Runway & Weather - London Heathrow
+GET {{baseUrl}}/api/{{apiVersion}}/runway/EGLL
+Accept: application/json
+
+### Runway & Weather - Charles de Gaulle Paris
+GET {{baseUrl}}/api/{{apiVersion}}/runway/LFPG
+Accept: application/json
+
+### Runway & Weather - Frankfurt
+GET {{baseUrl}}/api/{{apiVersion}}/runway/EDDF
+Accept: application/json
+
+### Runway & Weather - Munich
+GET {{baseUrl}}/api/{{apiVersion}}/runway/EDDM
+Accept: application/json
+
+### Runway & Weather - Amsterdam Schiphol
+GET {{baseUrl}}/api/{{apiVersion}}/runway/EHAM
+Accept: application/json
+
+### Runway & Weather - Madrid Barajas
+GET {{baseUrl}}/api/{{apiVersion}}/runway/LEMD
+Accept: application/json
+
+### Runway & Weather - Invalid ICAO (Should return 404)
+GET {{baseUrl}}/api/{{apiVersion}}/runway/XXXX
+Accept: application/json
+
+### ============================================================================
+### 🧪 ADVANCED TESTING SCENARIOS
+### ============================================================================
+
+### Performance Test - Large Result Set
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=Airport
+  &limit=100
+  &format=simple
+Accept: application/json
+
+### Format Comparison - Simple vs Full (London)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=London
+  &limit=5
+  &format=simple
+Accept: application/json
+
+### 
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city
+  ?q=London
+  &limit=5
+  &format=full
+Accept: application/json
+
+### Edge Case - Very Short Query (Should work)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=AB
+  &limit=5
+Accept: application/json
+
+### Edge Case - Single Character Query (May have minimum length requirement)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=A
+  &limit=5
+Accept: application/json
+
+### Edge Case - Empty Query (Should return error)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?q=
+  &limit=5
+Accept: application/json
+
+### Edge Case - Missing Query Parameter (Should return error)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/search
+  ?limit=5
+Accept: application/json
+
+### Edge Case - Invalid Coordinates (Should return error)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=200
+  &lng=300
+  &radius=1.0
+  &limit=10
+Accept: application/json
+
+### Edge Case - Negative Coordinates (Should work - Southern/Western Hemisphere)
+GET {{baseUrl}}/api/{{apiVersion}}/airports/nearby
+  ?lat=-40.0
+  &lng=-70.0
+  &radius=5.0
+  &limit=10
+Accept: application/json
+
+### ============================================================================
+### 🔄 BATCH TESTING - Multiple Similar Requests
+### ============================================================================
+
+### Batch Test - Major European Capitals
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city?q=London&limit=3&format=simple
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city?q=Paris&limit=3&format=simple
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city?q=Berlin&limit=3&format=simple
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city?q=Madrid&limit=3&format=simple
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/city?q=Rome&limit=3&format=simple
+
+### Batch Test - Major Airports by ICAO
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EGLL
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/LFPG
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EDDF
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EDDM
+
+###
+GET {{baseUrl}}/api/{{apiVersion}}/airports/icao/EHAM
+
+### ============================================================================
+### 📝 NOTES FOR TESTING
+### ============================================================================
+
+# Testing Tips:
+# 1. Use VS Code with REST Client extension for best experience
+# 2. Click "Send Request" above each ### line to execute
+# 3. Compare response times and data sizes
+# 4. Test fuzzy search capabilities with typos
+# 5. Compare simple vs full format responses
+# 6. Test error handling with invalid parameters
+
+# Expected Response Times:
+# - Simple queries: < 50ms
+# - Complex fuzzy searches: < 200ms
+# - Nearby searches: < 100ms
+# - Specific airport lookups: < 30ms
+
+# Response Format Differences:
+# - Simple format: ~70-83% smaller, mobile-optimized
+# - Full format: Complete airport data with all fields
+
+# Fuzzy Search Capabilities:
+# - Handles typos: Frankfrt → Frankfurt
+# - Character transposition: EGKL → EGLL, LFGP → LFPG
+# - Phonetic matching: Myunikh → Munich
+# - Partial matching: EGL → All UK airports starting with EGL*
