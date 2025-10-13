@@ -14,6 +14,9 @@
     "test:api": "node tests/comprehensive-test.cjs",
     "demo:db": "node airportDB/demo.cjs",
     "demo:web": "echo 'Demo available at: http://localhost:3002/demo' && start http://localhost:3002/demo",
+    "docs": "echo 'OpenAPI Documentation: http://localhost:3002/docs' && start http://localhost:3002/docs",
+    "test:app": "echo 'Test Application: http://localhost:3002/test' && start http://localhost:3002/test",
+    "docs:serve": "echo 'Starting server with documentation...' && npm start",
     "convert:csv": "cd airportDB && python csv_to_sqlite.py",
     "cleanup": "npm prune && npm audit fix --omit=dev",
     "deps:check": "npm outdated || true",
@@ -25,7 +28,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.17.1",
-    "sqlite3": "^5.1.7"
+    "js-yaml": "^4.1.0",
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

@@ -1,0 +1,689 @@
+{
+  "info": {
+    "name": "RunwayAPI Collection",
+    "description": "Complete API collection for RunwayAPI - European Airports Database with Advanced Fuzzy Search",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3002",
+      "type": "string",
+      "description": "Base URL for RunwayAPI"
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "🔍 Search Endpoints",
+      "description": "Advanced search capabilities with fuzzy matching",
+      "item": [
+        {
+          "name": "Basic Airport Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/search?q=London&limit=5&format=simple&fuzzy=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "London",
+                  "description": "Search term (required)"
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Maximum results (1-100)"
+                },
+                {
+                  "key": "format",
+                  "value": "simple",
+                  "description": "Response format: simple or full"
+                },
+                {
+                  "key": "fuzzy",
+                  "value": "true",
+                  "description": "Enable fuzzy matching"
+                }
+              ]
+            },
+            "description": "Search across all airport fields with optional fuzzy matching"
+          }
+        },
+        {
+          "name": "Fuzzy Search with Scoring",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/fuzzy?q=EGKL&details=true&limit=5&format=full",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "fuzzy"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "EGKL",
+                  "description": "Search term with typo (should match EGLL)"
+                },
+                {
+                  "key": "details",
+                  "value": "true",
+                  "description": "Include match scoring details"
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Maximum results"
+                },
+                {
+                  "key": "format",
+                  "value": "full",
+                  "description": "Full response format"
+                }
+              ]
+            },
+            "description": "Advanced fuzzy search with detailed match scoring and explanations"
+          }
+        },
+        {
+          "name": "City-Based Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/city?q=Munich&format=simple&limit=3&fuzzy=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "city"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Munich",
+                  "description": "City name"
+                },
+                {
+                  "key": "format",
+                  "value": "simple",
+                  "description": "Simple format for mobile apps"
+                },
+                {
+                  "key": "limit",
+                  "value": "3",
+                  "description": "Maximum results"
+                },
+                {
+                  "key": "fuzzy",
+                  "value": "true",
+                  "description": "Enable fuzzy city matching"
+                }
+              ]
+            },
+            "description": "Search airports by city/municipality name with advanced fuzzy matching"
+          }
+        },
+        {
+          "name": "Smart ICAO Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/smart-icao?q=EGKL&limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "smart-icao"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "EGKL",
+                  "description": "ICAO code (or partial) with typo"
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Maximum results (1-50)"
+                }
+              ]
+            },
+            "description": "ICAO-code specific fuzzy search optimized for aviation codes"
+          }
+        },
+        {
+          "name": "Search Suggestions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/suggestions?q=PAR&limit=8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "suggestions"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "PAR",
+                  "description": "Partial search term (min 2 chars)"
+                },
+                {
+                  "key": "limit",
+                  "value": "8",
+                  "description": "Maximum suggestions (1-20)"
+                }
+              ]
+            },
+            "description": "Get autocomplete suggestions for search interfaces"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Airport Data Endpoints",
+      "description": "Retrieve specific airport information and browse airports",
+      "item": [
+        {
+          "name": "Get Airport by ICAO Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/icao/EGLL",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "icao",
+                "EGLL"
+              ]
+            },
+            "description": "Retrieve detailed information for London Heathrow (EGLL)"
+          }
+        },
+        {
+          "name": "Get Airport by IATA Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/iata/LHR",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "iata",
+                "LHR"
+              ]
+            },
+            "description": "Retrieve airport information using IATA code (LHR = Heathrow)"
+          }
+        },
+        {
+          "name": "Get Airports by Country",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/country/DE?limit=20&type=large_airport",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "country",
+                "DE"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Maximum results (1-200)"
+                },
+                {
+                  "key": "type",
+                  "value": "large_airport",
+                  "description": "Filter by airport type"
+                }
+              ]
+            },
+            "description": "List large airports in Germany (DE)"
+          }
+        },
+        {
+          "name": "Get Airports by Type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/type/large_airport?limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "type",
+                "large_airport"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Maximum results (1-200)"
+                }
+              ]
+            },
+            "description": "Filter airports by facility type (large airports in Europe)"
+          }
+        },
+        {
+          "name": "Get Nearby Airports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/nearby?lat=48.8566&lng=2.3522&radius=1.0&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "nearby"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "48.8566",
+                  "description": "Latitude (Paris coordinates)"
+                },
+                {
+                  "key": "lng",
+                  "value": "2.3522",
+                  "description": "Longitude (Paris coordinates)"
+                },
+                {
+                  "key": "radius",
+                  "value": "1.0",
+                  "description": "Search radius in degrees"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Maximum results (1-100)"
+                }
+              ]
+            },
+            "description": "Find airports within specified radius of Paris coordinates"
+          }
+        },
+        {
+          "name": "Database Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/stats/countries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "stats",
+                "countries"
+              ]
+            },
+            "description": "Get comprehensive database statistics by country"
+          }
+        },
+        {
+          "name": "Database Information",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "info"
+              ]
+            },
+            "description": "Get general database metadata and API capabilities"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛫 Runway & Weather",
+      "description": "Runway information and weather data",
+      "item": [
+        {
+          "name": "Get Heathrow Runway Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/runway/EGLL",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "runway",
+                "EGLL"
+              ]
+            },
+            "description": "Retrieve runway information and current METAR weather data for Heathrow"
+          }
+        },
+        {
+          "name": "Get Frankfurt Runway Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/runway/EDDF",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "runway",
+                "EDDF"
+              ]
+            },
+            "description": "Retrieve runway information and current METAR weather data for Frankfurt"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧪 Test Cases",
+      "description": "Example test cases demonstrating fuzzy search capabilities",
+      "item": [
+        {
+          "name": "Test: City Name Typo Handling",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/city?q=Frankfrt&fuzzy=true&limit=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "city"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Frankfrt",
+                  "description": "Frankfurt with typo (missing 'u')"
+                },
+                {
+                  "key": "fuzzy",
+                  "value": "true",
+                  "description": "Enable fuzzy matching"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            },
+            "description": "Test fuzzy matching for city names with typos (Frankfrt → Frankfurt)"
+          }
+        },
+        {
+          "name": "Test: ICAO Character Transposition",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/fuzzy?q=LFGP&details=true&limit=3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "fuzzy"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "LFGP",
+                  "description": "LFPG with transposed characters (G and P swapped)"
+                },
+                {
+                  "key": "details",
+                  "value": "true",
+                  "description": "Show match scoring details"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            },
+            "description": "Test character transposition detection (LFGP → LFPG)"
+          }
+        },
+        {
+          "name": "Test: Format Comparison",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/search?q=London&format=simple&limit=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "London"
+                },
+                {
+                  "key": "format",
+                  "value": "simple",
+                  "description": "Change to 'full' to compare response sizes"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Compare simple vs full format response sizes (change format parameter)"
+          }
+        },
+        {
+          "name": "Test: Partial ICAO Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/airports/smart-icao?q=EGL&limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "airports",
+                "smart-icao"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "EGL",
+                  "description": "Partial ICAO code (UK airports starting with EGL)"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Test partial ICAO code matching (EGL* airports)"
+          }
+        }
+      ]
+    }
+  ]
+}

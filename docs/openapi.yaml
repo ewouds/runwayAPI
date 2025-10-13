@@ -1,0 +1,905 @@
+openapi: 3.0.3
+info:
+  title: RunwayAPI - European Airports Database
+  description: |
+    Professional-grade European airports database API with intelligent fuzzy search capabilities.
+    
+    ## Features
+    - 🔍 **Advanced Fuzzy Search**: Handles typos, character transpositions, and phonetic matching
+    - 📱 **Mobile-Optimized**: Simple format reduces response size by 70-83%
+    - 🌍 **Comprehensive Coverage**: 12,228 EU airports across 52 countries
+    - ⚡ **Lightning Fast**: Sub-50ms response times for simple queries
+    - 🎯 **Smart Matching**: City names, ICAO codes, airport names with intelligent scoring
+    - 📍 **Geospatial**: Find airports by proximity with radius search
+    - 🛫 **Runway Data**: Weather and runway information integration
+    
+    ## Database Coverage
+    - **Total Airports**: 12,228
+    - **Countries**: 52 (All EU + neighboring countries)
+    - **Large Airports**: 118 major commercial hubs
+    - **Response Formats**: Simple (mobile-optimized) and Full (complete data)
+    
+  version: 1.0.0
+  contact:
+    name: RunwayAPI Support
+    url: https://github.com/ewouds/runwayAPI
+  license:
+    name: ISC
+    url: https://opensource.org/licenses/ISC
+servers:
+  - url: http://localhost:3002
+    description: Development server
+  - url: https://api.runway.example.com
+    description: Production server (example)
+    
+tags:
+  - name: Search
+    description: Advanced airport search with fuzzy matching
+  - name: Airport Data
+    description: Retrieve specific airport information
+  - name: Geographic
+    description: Location-based airport discovery
+  - name: Runway & Weather
+    description: Runway information and weather data
+  - name: Database
+    description: Database information and statistics
+
+paths:
+  /:
+    get:
+      tags: [Database]
+      summary: API Welcome & Endpoints Overview
+      description: Get welcome message and available endpoint overview
+      responses:
+        '200':
+          description: Welcome message with endpoint list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WelcomeResponse'
+
+  /api/v1/airports/info:
+    get:
+      tags: [Database]
+      summary: Database Information
+      description: Get comprehensive database metadata and capabilities
+      responses:
+        '200':
+          description: Database information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInfoResponse'
+
+  /api/v1/airports/search:
+    get:
+      tags: [Search]
+      summary: Basic Airport Search
+      description: |
+        Search across all airport fields with optional fuzzy matching.
+        Handles airport names, cities, ICAO codes with intelligent scoring.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search term (airport name, city, ICAO code)
+          schema:
+            type: string
+            minLength: 2
+            example: "London"
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: fuzzy
+          in: query
+          description: Enable fuzzy matching for typo tolerance
+          schema:
+            type: boolean
+            default: true
+        - name: format
+          in: query
+          description: Response format (simple for mobile, full for complete data)
+          schema:
+            type: string
+            enum: [simple, full]
+            default: full
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirportSearchResponse'
+        '400':
+          description: Bad request (missing or invalid parameters)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/airports/fuzzy:
+    get:
+      tags: [Search]
+      summary: Advanced Fuzzy Search
+      description: |
+        Advanced fuzzy search with detailed match scoring and explanations.
+        Perfect for handling user input errors and character transpositions.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search term for fuzzy matching
+          schema:
+            type: string
+            minLength: 2
+            example: "EGKL"
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: details
+          in: query
+          description: Include detailed match scoring and explanations
+          schema:
+            type: boolean
+            default: false
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [simple, full]
+            default: full
+      responses:
+        '200':
+          description: Fuzzy search results with optional scoring details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FuzzySearchResponse'
+
+  /api/v1/airports/city:
+    get:
+      tags: [Search]
+      summary: City-Based Search
+      description: |
+        Search airports by city/municipality name with advanced fuzzy matching.
+        Optimized for city names with phonetic and partial matching.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: City or municipality name
+          schema:
+            type: string
+            minLength: 2
+            example: "Munich"
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: fuzzy
+          in: query
+          description: Enable fuzzy city name matching
+          schema:
+            type: boolean
+            default: true
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [simple, full]
+            default: full
+      responses:
+        '200':
+          description: City search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirportSearchResponse'
+
+  /api/v1/airports/smart-icao:
+    get:
+      tags: [Search]
+      summary: Smart ICAO Search
+      description: |
+        ICAO-code specific fuzzy search optimized for aviation codes.
+        Handles character transpositions and partial ICAO matching.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: ICAO code (full or partial)
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 4
+            example: "EGKL"
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: Smart ICAO search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirportSearchResponse'
+
+  /api/v1/airports/suggestions:
+    get:
+      tags: [Search]
+      summary: Search Suggestions
+      description: |
+        Get autocomplete suggestions for search interfaces.
+        Perfect for implementing type-ahead search functionality.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Partial search term
+          schema:
+            type: string
+            minLength: 2
+            example: "LO"
+        - name: limit
+          in: query
+          description: Maximum suggestions
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        '200':
+          description: Search suggestions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirportSearchResponse'
+
+  /api/v1/airports/icao/{icaoCode}:
+    get:
+      tags: [Airport Data]
+      summary: Get Airport by ICAO Code
+      description: Retrieve detailed information for a specific airport using ICAO code
+      parameters:
+        - name: icaoCode
+          in: path
+          required: true
+          description: 4-letter ICAO airport code
+          schema:
+            type: string
+            pattern: '^[A-Z]{4}$'
+            example: "EGLL"
+      responses:
+        '200':
+          description: Airport details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleAirportResponse'
+        '404':
+          description: Airport not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/airports/iata/{iataCode}:
+    get:
+      tags: [Airport Data]
+      summary: Get Airport by IATA Code
+      description: Retrieve airport information using 3-letter IATA code
+      parameters:
+        - name: iataCode
+          in: path
+          required: true
+          description: 3-letter IATA airport code
+          schema:
+            type: string
+            pattern: '^[A-Z]{3}$'
+            example: "LHR"
+      responses:
+        '200':
+          description: Airport details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleAirportResponse'
+        '404':
+          description: Airport not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/airports/country/{countryCode}:
+    get:
+      tags: [Geographic]
+      summary: Get Airports by Country
+      description: List airports in a specific country with optional type filtering
+      parameters:
+        - name: countryCode
+          in: path
+          required: true
+          description: 2-letter ISO country code
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+            example: "DE"
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: type
+          in: query
+          description: Filter by airport type
+          schema:
+            type: string
+            enum: [large_airport, medium_airport, small_airport, heliport, seaplane_base]
+      responses:
+        '200':
+          description: Country airports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirportSearchResponse'
+
+  /api/v1/airports/type/{airportType}:
+    get:
+      tags: [Airport Data]
+      summary: Get Airports by Type
+      description: Filter airports by facility type across all countries
+      parameters:
+        - name: airportType
+          in: path
+          required: true
+          description: Airport facility type
+          schema:
+            type: string
+            enum: [large_airport, medium_airport, small_airport, heliport, seaplane_base]
+            example: "large_airport"
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+      responses:
+        '200':
+          description: Airports by type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AirportSearchResponse'
+
+  /api/v1/airports/nearby:
+    get:
+      tags: [Geographic]
+      summary: Find Nearby Airports
+      description: |
+        Find airports within a specified radius of coordinates.
+        Perfect for location-based services and mapping applications.
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude coordinate
+          schema:
+            type: number
+            format: float
+            minimum: -90
+            maximum: 90
+            example: 48.8566
+        - name: lng
+          in: query
+          required: true
+          description: Longitude coordinate
+          schema:
+            type: number
+            format: float
+            minimum: -180
+            maximum: 180
+            example: 2.3522
+        - name: radius
+          in: query
+          description: Search radius in degrees (roughly 111km per degree)
+          schema:
+            type: number
+            format: float
+            minimum: 0.1
+            maximum: 10.0
+            default: 1.0
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Nearby airports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearbyAirportsResponse'
+
+  /api/v1/airports/stats/countries:
+    get:
+      tags: [Database]
+      summary: Country Statistics
+      description: Get comprehensive database statistics grouped by country
+      responses:
+        '200':
+          description: Country statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryStatsResponse'
+
+  /api/v1/runway/{icaoCode}:
+    get:
+      tags: [Runway & Weather]
+      summary: Get Runway Data with Weather
+      description: |
+        Retrieve runway information and current METAR weather data for an airport.
+        Combines infrastructure data with real-time weather conditions.
+      parameters:
+        - name: icaoCode
+          in: path
+          required: true
+          description: 4-letter ICAO airport code
+          schema:
+            type: string
+            pattern: '^[A-Z]{4}$'
+            example: "EGLL"
+      responses:
+        '200':
+          description: Runway and weather data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunwayWeatherResponse'
+        '404':
+          description: Airport or runway data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Airport:
+      type: object
+      description: Complete airport information
+      properties:
+        id:
+          type: integer
+          description: Unique airport identifier
+          example: 12345
+        icao_code:
+          type: string
+          description: 4-letter ICAO airport code
+          example: "EGLL"
+        iata_code:
+          type: string
+          nullable: true
+          description: 3-letter IATA airport code
+          example: "LHR"
+        name:
+          type: string
+          description: Official airport name
+          example: "London Heathrow Airport"
+        type:
+          type: string
+          description: Airport facility type
+          enum: [large_airport, medium_airport, small_airport, heliport, seaplane_base]
+          example: "large_airport"
+        latitude:
+          type: number
+          format: float
+          description: Airport latitude coordinate
+          example: 51.4706
+        longitude:
+          type: number
+          format: float
+          description: Airport longitude coordinate
+          example: -0.461941
+        municipality:
+          type: string
+          description: City or municipality name
+          example: "London"
+        country_name:
+          type: string
+          description: Full country name
+          example: "United Kingdom"
+        country_code:
+          type: string
+          description: 2-letter ISO country code
+          example: "GB"
+        continent:
+          type: string
+          description: Continent code
+          example: "EU"
+        scheduled_service:
+          type: string
+          description: Whether airport has scheduled service
+          enum: ["yes", "no"]
+          example: "yes"
+
+    SimpleAirport:
+      type: object
+      description: Simplified airport information for mobile applications
+      properties:
+        icao_code:
+          type: string
+          description: 4-letter ICAO airport code
+          example: "EGLL"
+        city:
+          type: string
+          description: City or municipality name
+          example: "London"
+        country:
+          type: string
+          description: Full country name
+          example: "United Kingdom"
+
+    FuzzyAirport:
+      allOf:
+        - $ref: '#/components/schemas/Airport'
+        - type: object
+          properties:
+            fuzzyScore:
+              type: number
+              format: float
+              description: Fuzzy match score (0-100)
+              example: 96.5
+            matchDetails:
+              type: object
+              description: Detailed match information
+              properties:
+                matches:
+                  type: array
+                  items:
+                    type: string
+                  description: List of match explanations
+                  example: ["ICAO fuzzy match (93.3%)", "Likely character transposition"]
+
+    RunwayWeatherData:
+      type: object
+      description: Runway and weather information
+      properties:
+        airport:
+          type: string
+          description: ICAO airport code
+          example: "EGLL"
+        runway:
+          type: object
+          properties:
+            runway_ident:
+              type: string
+              description: Runway identifier
+              example: "09L/27R"
+            length_ft:
+              type: integer
+              description: Runway length in feet
+              example: 12799
+            width_ft:
+              type: integer
+              description: Runway width in feet
+              example: 150
+            surface:
+              type: string
+              description: Runway surface type
+              example: "ASP"
+            lighted:
+              type: boolean
+              description: Whether runway is lighted
+              example: true
+        weather:
+          type: object
+          properties:
+            station:
+              type: string
+              description: Weather station ICAO code
+              example: "EGLL"
+            wind:
+              type: object
+              properties:
+                direction:
+                  type: integer
+                  description: Wind direction in degrees
+                  example: 270
+                speed:
+                  type: integer
+                  description: Wind speed
+                  example: 8
+                unit:
+                  type: string
+                  description: Wind speed unit
+                  example: "KT"
+            visibility:
+              type: number
+              description: Visibility in kilometers
+              example: 10
+            temperature:
+              type: integer
+              description: Temperature in Celsius
+              example: 15
+            pressure:
+              type: object
+              properties:
+                value:
+                  type: integer
+                  description: Atmospheric pressure value
+                  example: 1015
+                unit:
+                  type: string
+                  description: Pressure unit
+                  example: "hPa"
+
+    CountryStats:
+      type: object
+      description: Airport statistics for a country
+      properties:
+        country_name:
+          type: string
+          description: Full country name
+          example: "France"
+        country_code:
+          type: string
+          description: 2-letter ISO country code
+          example: "FR"
+        total_airports:
+          type: integer
+          description: Total number of airports in country
+          example: 1751
+        large_airports:
+          type: integer
+          description: Number of large airports
+          example: 12
+        medium_airports:
+          type: integer
+          description: Number of medium airports
+          example: 45
+        scheduled_airports:
+          type: integer
+          description: Number of airports with scheduled service
+          example: 89
+
+    # Response Schemas
+    WelcomeResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response status code (0 = success)
+          example: 0
+        message:
+          type: string
+          description: Welcome message
+          example: "Welcome to Runway API"
+        version:
+          type: string
+          description: API version
+          example: "1.0.0"
+        demo:
+          type: string
+          description: Demo page information
+          example: "/demo - Interactive HTML demo for airport search"
+        endpoints:
+          type: object
+          description: Available API endpoints overview
+
+    DatabaseInfoResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "Database information retrieved successfully"
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "EU Airports Database"
+            totalRecords:
+              type: integer
+              example: 12228
+            uniqueCountries:
+              type: integer
+              example: 52
+            largeAirports:
+              type: integer
+              example: 118
+            fuzzySearchFeatures:
+              type: array
+              items:
+                type: string
+              example: ["Typo tolerance (Levenshtein distance)", "Phonetic matching (Soundex)", "Character transposition detection"]
+            endpoints:
+              type: object
+              description: Key endpoint examples
+
+    AirportSearchResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response status code (0 = success, 1 = error)
+          example: 0
+        message:
+          type: string
+          description: Response message
+          example: "Search completed successfully"
+        data:
+          type: object
+          properties:
+            query:
+              type: string
+              description: Original search query
+              example: "London"
+            count:
+              type: integer
+              description: Number of results returned
+              example: 5
+            limit:
+              type: integer
+              description: Applied result limit
+              example: 20
+            format:
+              type: string
+              description: Response format used
+              example: "simple"
+            airports:
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/Airport'
+                  - $ref: '#/components/schemas/SimpleAirport'
+
+    FuzzySearchResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "Fuzzy search completed successfully"
+        data:
+          type: object
+          properties:
+            query:
+              type: string
+              example: "EGKL"
+            count:
+              type: integer
+              example: 3
+            limit:
+              type: integer
+              example: 20
+            airports:
+              type: array
+              items:
+                $ref: '#/components/schemas/FuzzyAirport'
+
+    SingleAirportResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "Airport found successfully"
+        data:
+          $ref: '#/components/schemas/Airport'
+
+    NearbyAirportsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "Nearby airports found successfully"
+        data:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: float
+              example: 48.8566
+            longitude:
+              type: number
+              format: float
+              example: 2.3522
+            radius:
+              type: number
+              format: float
+              example: 1.0
+            count:
+              type: integer
+              example: 8
+            airports:
+              type: array
+              items:
+                $ref: '#/components/schemas/Airport'
+
+    CountryStatsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "Country statistics retrieved successfully"
+        data:
+          type: object
+          properties:
+            countries:
+              type: array
+              items:
+                $ref: '#/components/schemas/CountryStats'
+
+    RunwayWeatherResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "Runway and weather data retrieved successfully"
+        data:
+          $ref: '#/components/schemas/RunwayWeatherData'
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code (1 = error)
+          example: 1
+        message:
+          type: string
+          description: Error description
+          example: "Search term (q) parameter is required"
+        error:
+          type: string
+          description: Error type
+          example: "Bad Request"

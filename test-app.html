@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RunwayAPI Test Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .section-description {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .section-content {
+            padding: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 82, 152, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .results-container {
+            margin-top: 25px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .results-info {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .response-time {
+            font-size: 0.9rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .airport-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .airport-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .airport-code {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 8px;
+        }
+
+        .airport-name {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .airport-location {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .airport-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #333;
+        }
+
+        .fuzzy-score {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .match-details {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f5e8;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .match-details ul {
+            margin: 5px 0 0 20px;
+        }
+
+        .match-details li {
+            font-size: 0.85rem;
+            color: #2e7d32;
+            margin-bottom: 3px;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #2a5298;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .quick-tests {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-test-btn {
+            padding: 8px 15px;
+            background: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .quick-test-btn:hover {
+            background: #2a5298;
+            color: white;
+        }
+
+        .json-viewer {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .endpoint-url {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #1565c0;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                min-width: 100%;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛫 RunwayAPI Test Application</h1>
+            <p>Comprehensive testing interface for European Airports Database API</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">12,228</div>
+                    <div class="stat-label">Airports</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">52</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">Endpoints</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Search Endpoints -->
+            <div class="test-section">
+                <div class="section-header">
+                    <div class="section-title">🔍 Search Endpoints</div>
+                    <div class="section-description">Test advanced search capabilities with fuzzy matching and typo tolerance</div>
+                </div>
+                <div class="section-content">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('search', 'basic')">Basic Search</button>
+                        <button class="tab" onclick="switchTab('search', 'fuzzy')">Fuzzy Search</button>
+                        <button class="tab" onclick="switchTab('search', 'city')">City Search</button>
+                        <button class="tab" onclick="switchTab('search', 'icao')">Smart ICAO</button>
+                        <button class="tab" onclick="switchTab('search', 'suggestions')">Suggestions</button>
+                    </div>
+
+                    <!-- Basic Search -->
+                    <div id="search-basic" class="tab-content active">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillBasicSearch('London', 5, 'simple')">London (Simple)</span>
+                            <span class="quick-test-btn" onclick="fillBasicSearch('Paris', 3, 'full')">Paris (Full)</span>
+                            <span class="quick-test-btn" onclick="fillBasicSearch('Heathrow', 5, 'simple')">Heathrow</span>
+                            <span class="quick-test-btn" onclick="fillBasicSearch('Munich', 5, 'simple')">Munich</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Search Term</label>
+                                <input type="text" id="basic-query" placeholder="London, EGLL, Heathrow...">
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="basic-limit" value="10" min="1" max="100">
+                            </div>
+                            <div class="input-group">
+                                <label>Format</label>
+                                <select id="basic-format">
+                                    <option value="simple">Simple (Mobile)</option>
+                                    <option value="full">Full (Complete)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Fuzzy</label>
+                                <select id="basic-fuzzy">
+                                    <option value="true">Enabled</option>
+                                    <option value="false">Disabled</option>
+                                </select>
+                            </div>
+                            <button class="btn" onclick="testBasicSearch()">Search</button>
+                        </div>
+                        <div id="basic-results"></div>
+                    </div>
+
+                    <!-- Fuzzy Search -->
+                    <div id="search-fuzzy" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillFuzzySearch('EGKL', true)">EGKL → EGLL</span>
+                            <span class="quick-test-btn" onclick="fillFuzzySearch('LFGP', true)">LFGP → LFPG</span>
+                            <span class="quick-test-btn" onclick="fillFuzzySearch('Frankfrt', true)">Frankfrt → Frankfurt</span>
+                            <span class="quick-test-btn" onclick="fillFuzzySearch('Myunikh', true)">Myunikh → Munich</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Search Term (with typos)</label>
+                                <input type="text" id="fuzzy-query" placeholder="EGKL, LFGP, Frankfrt...">
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="fuzzy-limit" value="5" min="1" max="100">
+                            </div>
+                            <div class="input-group">
+                                <label>Details</label>
+                                <select id="fuzzy-details">
+                                    <option value="true">Show Scoring</option>
+                                    <option value="false">Hide Scoring</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Format</label>
+                                <select id="fuzzy-format">
+                                    <option value="full">Full (with scores)</option>
+                                    <option value="simple">Simple</option>
+                                </select>
+                            </div>
+                            <button class="btn" onclick="testFuzzySearch()">Fuzzy Search</button>
+                        </div>
+                        <div id="fuzzy-results"></div>
+                    </div>
+
+                    <!-- City Search -->
+                    <div id="search-city" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillCitySearch('Munich', 5)">Munich</span>
+                            <span class="quick-test-btn" onclick="fillCitySearch('Frankfrt', 3)">Frankfurt (typo)</span>
+                            <span class="quick-test-btn" onclick="fillCitySearch('Amsterdam', 5)">Amsterdam</span>
+                            <span class="quick-test-btn" onclick="fillCitySearch('Barcelona', 3)">Barcelona</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>City Name</label>
+                                <input type="text" id="city-query" placeholder="Munich, Paris, London...">
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="city-limit" value="10" min="1" max="100">
+                            </div>
+                            <div class="input-group">
+                                <label>Format</label>
+                                <select id="city-format">
+                                    <option value="simple">Simple (Mobile)</option>
+                                    <option value="full">Full (Complete)</option>
+                                </select>
+                            </div>
+                            <button class="btn" onclick="testCitySearch()">Search by City</button>
+                        </div>
+                        <div id="city-results"></div>
+                    </div>
+
+                    <!-- Smart ICAO -->
+                    <div id="search-icao" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillIcaoSearch('EGKL', 5)">EGKL (typo)</span>
+                            <span class="quick-test-btn" onclick="fillIcaoSearch('EGL', 10)">EGL* (partial)</span>
+                            <span class="quick-test-btn" onclick="fillIcaoSearch('LFPG', 3)">LFPG (exact)</span>
+                            <span class="quick-test-btn" onclick="fillIcaoSearch('EDD', 8)">EDD* (German)</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>ICAO Code</label>
+                                <input type="text" id="icao-query" placeholder="EGLL, EGL, LFPG...">
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="icao-limit" value="10" min="1" max="50">
+                            </div>
+                            <button class="btn" onclick="testSmartIcao()">Smart ICAO Search</button>
+                        </div>
+                        <div id="icao-results"></div>
+                    </div>
+
+                    <!-- Suggestions -->
+                    <div id="search-suggestions" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillSuggestions('LO', 8)">LO (London)</span>
+                            <span class="quick-test-btn" onclick="fillSuggestions('PAR', 5)">PAR (Paris)</span>
+                            <span class="quick-test-btn" onclick="fillSuggestions('MU', 10)">MU (Munich)</span>
+                            <span class="quick-test-btn" onclick="fillSuggestions('FR', 6)">FR (Frankfurt)</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Partial Term</label>
+                                <input type="text" id="suggestions-query" placeholder="LO, PAR, MU...">
+                            </div>
+                            <div class="input-group">
+                                <label>Max Suggestions</label>
+                                <input type="number" id="suggestions-limit" value="10" min="1" max="20">
+                            </div>
+                            <button class="btn" onclick="testSuggestions()">Get Suggestions</button>
+                        </div>
+                        <div id="suggestions-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Airport Data Endpoints -->
+            <div class="test-section">
+                <div class="section-header">
+                    <div class="section-title">🏢 Airport Data Endpoints</div>
+                    <div class="section-description">Retrieve specific airport information and browse by various criteria</div>
+                </div>
+                <div class="section-content">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('data', 'icao')">By ICAO</button>
+                        <button class="tab" onclick="switchTab('data', 'iata')">By IATA</button>
+                        <button class="tab" onclick="switchTab('data', 'country')">By Country</button>
+                        <button class="tab" onclick="switchTab('data', 'type')">By Type</button>
+                    </div>
+
+                    <!-- By ICAO -->
+                    <div id="data-icao" class="tab-content active">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillIcaoCode('EGLL')">EGLL (Heathrow)</span>
+                            <span class="quick-test-btn" onclick="fillIcaoCode('LFPG')">LFPG (CDG)</span>
+                            <span class="quick-test-btn" onclick="fillIcaoCode('EDDF')">EDDF (Frankfurt)</span>
+                            <span class="quick-test-btn" onclick="fillIcaoCode('EDDM')">EDDM (Munich)</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>ICAO Code</label>
+                                <input type="text" id="data-icao-code" placeholder="EGLL, LFPG, EDDF..." maxlength="4">
+                            </div>
+                            <button class="btn" onclick="testGetByIcao()">Get Airport</button>
+                        </div>
+                        <div id="data-icao-results"></div>
+                    </div>
+
+                    <!-- By IATA -->
+                    <div id="data-iata" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillIataCode('LHR')">LHR (Heathrow)</span>
+                            <span class="quick-test-btn" onclick="fillIataCode('CDG')">CDG (Paris)</span>
+                            <span class="quick-test-btn" onclick="fillIataCode('FRA')">FRA (Frankfurt)</span>
+                            <span class="quick-test-btn" onclick="fillIataCode('MUC')">MUC (Munich)</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>IATA Code</label>
+                                <input type="text" id="data-iata-code" placeholder="LHR, CDG, FRA..." maxlength="3">
+                            </div>
+                            <button class="btn" onclick="testGetByIata()">Get Airport</button>
+                        </div>
+                        <div id="data-iata-results"></div>
+                    </div>
+
+                    <!-- By Country -->
+                    <div id="data-country" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillCountry('DE', 'large_airport', 15)">Germany (Large)</span>
+                            <span class="quick-test-btn" onclick="fillCountry('FR', '', 20)">France (All)</span>
+                            <span class="quick-test-btn" onclick="fillCountry('GB', 'medium_airport', 10)">UK (Medium)</span>
+                            <span class="quick-test-btn" onclick="fillCountry('ES', 'large_airport', 8)">Spain (Large)</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Country Code</label>
+                                <input type="text" id="data-country-code" placeholder="DE, FR, GB, ES..." maxlength="2">
+                            </div>
+                            <div class="input-group">
+                                <label>Airport Type</label>
+                                <select id="data-country-type">
+                                    <option value="">All Types</option>
+                                    <option value="large_airport">Large Airport</option>
+                                    <option value="medium_airport">Medium Airport</option>
+                                    <option value="small_airport">Small Airport</option>
+                                    <option value="heliport">Heliport</option>
+                                    <option value="seaplane_base">Seaplane Base</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="data-country-limit" value="20" min="1" max="200">
+                            </div>
+                            <button class="btn" onclick="testGetByCountry()">Get Airports</button>
+                        </div>
+                        <div id="data-country-results"></div>
+                    </div>
+
+                    <!-- By Type -->
+                    <div id="data-type" class="tab-content">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillType('large_airport', 25)">Large Airports</span>
+                            <span class="quick-test-btn" onclick="fillType('medium_airport', 30)">Medium Airports</span>
+                            <span class="quick-test-btn" onclick="fillType('heliport', 20)">Heliports</span>
+                            <span class="quick-test-btn" onclick="fillType('seaplane_base', 10)">Seaplane Bases</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Airport Type</label>
+                                <select id="data-type-select">
+                                    <option value="large_airport">Large Airport</option>
+                                    <option value="medium_airport">Medium Airport</option>
+                                    <option value="small_airport">Small Airport</option>
+                                    <option value="heliport">Heliport</option>
+                                    <option value="seaplane_base">Seaplane Base</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="data-type-limit" value="30" min="1" max="200">
+                            </div>
+                            <button class="btn" onclick="testGetByType()">Get Airports</button>
+                        </div>
+                        <div id="data-type-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geographic Endpoints -->
+            <div class="test-section">
+                <div class="section-header">
+                    <div class="section-title">📍 Geographic Search</div>
+                    <div class="section-description">Find airports by proximity and get database statistics</div>
+                </div>
+                <div class="section-content">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('geo', 'nearby')">Nearby Airports</button>
+                        <button class="tab" onclick="switchTab('geo', 'stats')">Country Stats</button>
+                        <button class="tab" onclick="switchTab('geo', 'info')">Database Info</button>
+                    </div>
+
+                    <!-- Nearby Airports -->
+                    <div id="geo-nearby" class="tab-content active">
+                        <div class="quick-tests">
+                            <span class="quick-test-btn" onclick="fillNearby(51.5074, -0.1278, 1.0, 10)">London Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(48.8566, 2.3522, 1.5, 15)">Paris Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(52.5200, 13.4050, 1.0, 8)">Berlin Area</span>
+                            <span class="quick-test-btn" onclick="fillNearby(41.9028, 12.4964, 2.0, 12)">Rome Area</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label>Latitude</label>
+                                <input type="number" id="geo-lat" placeholder="51.5074" step="0.0001" min="-90" max="90">
+                            </div>
+                            <div class="input-group">
+                                <label>Longitude</label>
+                                <input type="number" id="geo-lng" placeholder="-0.1278" step="0.0001" min="-180" max="180">
+                            </div>
+                            <div class="input-group">
+                                <label>Radius (degrees)</label>
+                                <input type="number" id="geo-radius" value="1.0" step="0.1" min="0.1" max="10">
+                            </div>
+                            <div class="input-group">
+                                <label>Limit</label>
+                                <input type="number" id="geo-limit" value="20" min="1" max="100">
+                            </div>
+                            <button class="btn" onclick="testNearbyAirports()">Find Nearby</button>
+                        </div>
+                        <div id="geo-nearby-results"></div>
+                    </div>
+
+                    <!-- Country Stats -->
+                    <div id="geo-stats" class="tab-content">
+                        <div class="form-group">
+                            <button class="btn" onclick="testCountryStats()">Get Country Statistics</button>
+                        </div>
+                        <div id="geo-stats-results"></div>
+                    </div>
+
+                    <!-- Database Info -->
+                    <div id="geo-info" class="tab-content">
+                        <div class="form-group">
+                            <button class="btn" onclick="testDatabaseInfo()">Get Database Information</button>
+                        </div>
+                        <div id="geo-info-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Runway & Weather -->
+            <div class="test-section">
+                <div class="section-header">
+                    <div class="section-title">🛫 Runway & Weather Data</div>
+                    <div class="section-description">Get runway information with real-time weather data</div>
+                </div>
+                <div class="section-content">
+                    <div class="quick-tests">
+                        <span class="quick-test-btn" onclick="fillRunway('EGLL')">EGLL (Heathrow)</span>
+                        <span class="quick-test-btn" onclick="fillRunway('LFPG')">LFPG (CDG)</span>
+                        <span class="quick-test-btn" onclick="fillRunway('EDDF')">EDDF (Frankfurt)</span>
+                        <span class="quick-test-btn" onclick="fillRunway('EDDM')">EDDM (Munich)</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label>ICAO Code</label>
+                            <input type="text" id="runway-icao" placeholder="EGLL, LFPG, EDDF..." maxlength="4">
+                        </div>
+                        <button class="btn" onclick="testRunwayWeather()">Get Runway & Weather</button>
+                    </div>
+                    <div id="runway-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        // Tab switching functionality
+        function switchTab(section, tab) {
+            // Hide all tab contents in the section
+            document.querySelectorAll(`#${section}-${tab}`).forEach(content => {
+                content.parentElement.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            });
+            
+            // Remove active class from all tabs in the section
+            document.querySelectorAll(`#${section}-${tab}`).forEach(content => {
+                content.parentElement.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            });
+            
+            // Show selected tab content
+            document.getElementById(`${section}-${tab}`).classList.add('active');
+            
+            // Mark selected tab as active
+            event.target.classList.add('active');
+        }
+
+        // Quick test functions
+        function fillBasicSearch(query, limit, format) {
+            document.getElementById('basic-query').value = query;
+            document.getElementById('basic-limit').value = limit;
+            document.getElementById('basic-format').value = format;
+        }
+
+        function fillFuzzySearch(query, details) {
+            document.getElementById('fuzzy-query').value = query;
+            document.getElementById('fuzzy-details').value = details;
+        }
+
+        function fillCitySearch(query, limit) {
+            document.getElementById('city-query').value = query;
+            document.getElementById('city-limit').value = limit;
+        }
+
+        function fillIcaoSearch(query, limit) {
+            document.getElementById('icao-query').value = query;
+            document.getElementById('icao-limit').value = limit;
+        }
+
+        function fillSuggestions(query, limit) {
+            document.getElementById('suggestions-query').value = query;
+            document.getElementById('suggestions-limit').value = limit;
+        }
+
+        function fillIcaoCode(code) {
+            document.getElementById('data-icao-code').value = code;
+        }
+
+        function fillIataCode(code) {
+            document.getElementById('data-iata-code').value = code;
+        }
+
+        function fillCountry(code, type, limit) {
+            document.getElementById('data-country-code').value = code;
+            document.getElementById('data-country-type').value = type;
+            document.getElementById('data-country-limit').value = limit;
+        }
+
+        function fillType(type, limit) {
+            document.getElementById('data-type-select').value = type;
+            document.getElementById('data-type-limit').value = limit;
+        }
+
+        function fillNearby(lat, lng, radius, limit) {
+            document.getElementById('geo-lat').value = lat;
+            document.getElementById('geo-lng').value = lng;
+            document.getElementById('geo-radius').value = radius;
+            document.getElementById('geo-limit').value = limit;
+        }
+
+        function fillRunway(icao) {
+            document.getElementById('runway-icao').value = icao;
+        }
+
+        // API test functions
+        async function makeRequest(url, resultsId) {
+            const resultsDiv = document.getElementById(resultsId);
+            const startTime = Date.now();
+            
+            resultsDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const responseTime = Date.now() - startTime;
+                
+                displayResults(data, responseTime, url, resultsDiv);
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error-message">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function displayResults(data, responseTime, url, resultsDiv) {
+            let html = `
+                <div class="endpoint-url">${url}</div>
+                <div class="results-header">
+                    <span class="results-info">
+                        ${data.code === 0 ? '✅ Success' : '❌ Error'} 
+                        ${data.data?.count ? `(${data.data.count} results)` : ''}
+                    </span>
+                    <span class="response-time">${responseTime}ms</span>
+                </div>
+            `;
+
+            if (data.code === 1) {
+                html += `
+                    <div class="error-message">
+                        <strong>${data.error || 'Error'}:</strong> ${data.message}
+                    </div>
+                `;
+            } else if (data.data?.airports) {
+                html += '<div class="results-grid">';
+                data.data.airports.forEach(airport => {
+                    html += createAirportCard(airport);
+                });
+                html += '</div>';
+            } else if (data.data?.countries) {
+                html += '<div class="results-grid">';
+                data.data.countries.forEach(country => {
+                    html += createCountryCard(country);
+                });
+                html += '</div>';
+            } else if (data.data && !data.data.airports) {
+                // Single airport or other data
+                if (data.data.icao_code) {
+                    html += '<div class="results-grid">' + createAirportCard(data.data) + '</div>';
+                } else if (data.data.runway || data.data.weather) {
+                    html += createRunwayWeatherCard(data.data);
+                } else {
+                    html += `<div class="json-viewer">${JSON.stringify(data.data, null, 2)}</div>`;
+                }
+            }
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function createAirportCard(airport) {
+            let html = `
+                <div class="airport-card">
+                    <div class="airport-code">${airport.icao_code || 'N/A'}</div>
+                    <div class="airport-name">${airport.name || airport.city || 'Unknown Airport'}</div>
+                    <div class="airport-location">
+                        📍 ${airport.municipality || airport.city || 'Unknown'}, ${airport.country_name || airport.country || 'Unknown'}
+                    </div>
+            `;
+
+            if (airport.fuzzyScore) {
+                html += `<div class="fuzzy-score">Match: ${airport.fuzzyScore}%</div>`;
+            }
+
+            html += '<div class="airport-details">';
+            
+            if (airport.iata_code) {
+                html += `<div class="detail-item"><span class="detail-label">IATA:</span><span class="detail-value">${airport.iata_code}</span></div>`;
+            }
+            if (airport.type) {
+                html += `<div class="detail-item"><span class="detail-label">Type:</span><span class="detail-value">${airport.type}</span></div>`;
+            }
+            if (airport.latitude && airport.longitude) {
+                html += `<div class="detail-item"><span class="detail-label">Coordinates:</span><span class="detail-value">${airport.latitude.toFixed(4)}, ${airport.longitude.toFixed(4)}</span></div>`;
+            }
+            if (airport.scheduled_service) {
+                html += `<div class="detail-item"><span class="detail-label">Scheduled:</span><span class="detail-value">${airport.scheduled_service}</span></div>`;
+            }
+
+            html += '</div>';
+
+            if (airport.matchDetails) {
+                html += `
+                    <div class="match-details">
+                        <strong>Match Details:</strong>
+                        <ul>
+                            ${airport.matchDetails.matches.map(match => `<li>${match}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function createCountryCard(country) {
+            return `
+                <div class="airport-card">
+                    <div class="airport-code">${country.country_code}</div>
+                    <div class="airport-name">${country.country_name}</div>
+                    <div class="airport-details">
+                        <div class="detail-item"><span class="detail-label">Total:</span><span class="detail-value">${country.total_airports}</span></div>
+                        <div class="detail-item"><span class="detail-label">Large:</span><span class="detail-value">${country.large_airports}</span></div>
+                        <div class="detail-item"><span class="detail-label">Medium:</span><span class="detail-value">${country.medium_airports}</span></div>
+                        <div class="detail-item"><span class="detail-label">Scheduled:</span><span class="detail-value">${country.scheduled_airports}</span></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createRunwayWeatherCard(data) {
+            let html = `
+                <div class="airport-card" style="max-width: 100%;">
+                    <div class="airport-code">${data.airport}</div>
+            `;
+
+            if (data.runway) {
+                html += `
+                    <div class="airport-name">🛫 Runway Information</div>
+                    <div class="airport-details">
+                        <div class="detail-item"><span class="detail-label">Runway:</span><span class="detail-value">${data.runway.runway_ident}</span></div>
+                        <div class="detail-item"><span class="detail-label">Length:</span><span class="detail-value">${data.runway.length_ft} ft</span></div>
+                        <div class="detail-item"><span class="detail-label">Width:</span><span class="detail-value">${data.runway.width_ft} ft</span></div>
+                        <div class="detail-item"><span class="detail-label">Surface:</span><span class="detail-value">${data.runway.surface}</span></div>
+                        <div class="detail-item"><span class="detail-label">Lighted:</span><span class="detail-value">${data.runway.lighted ? 'Yes' : 'No'}</span></div>
+                    </div>
+                `;
+            }
+
+            if (data.weather) {
+                html += `
+                    <div class="airport-name" style="margin-top: 20px;">🌤️ Weather Information</div>
+                    <div class="airport-details">
+                        <div class="detail-item"><span class="detail-label">Wind:</span><span class="detail-value">${data.weather.wind.direction}° at ${data.weather.wind.speed} ${data.weather.wind.unit}</span></div>
+                        <div class="detail-item"><span class="detail-label">Visibility:</span><span class="detail-value">${data.weather.visibility} km</span></div>
+                        <div class="detail-item"><span class="detail-label">Temperature:</span><span class="detail-value">${data.weather.temperature}°C</span></div>
+                        <div class="detail-item"><span class="detail-label">Pressure:</span><span class="detail-value">${data.weather.pressure.value} ${data.weather.pressure.unit}</span></div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        // Test functions
+        async function testBasicSearch() {
+            const query = document.getElementById('basic-query').value;
+            const limit = document.getElementById('basic-limit').value;
+            const format = document.getElementById('basic-format').value;
+            const fuzzy = document.getElementById('basic-fuzzy').value;
+            
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/search?q=${encodeURIComponent(query)}&limit=${limit}&format=${format}&fuzzy=${fuzzy}`;
+            await makeRequest(url, 'basic-results');
+        }
+
+        async function testFuzzySearch() {
+            const query = document.getElementById('fuzzy-query').value;
+            const limit = document.getElementById('fuzzy-limit').value;
+            const details = document.getElementById('fuzzy-details').value;
+            const format = document.getElementById('fuzzy-format').value;
+            
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/fuzzy?q=${encodeURIComponent(query)}&limit=${limit}&details=${details}&format=${format}`;
+            await makeRequest(url, 'fuzzy-results');
+        }
+
+        async function testCitySearch() {
+            const query = document.getElementById('city-query').value;
+            const limit = document.getElementById('city-limit').value;
+            const format = document.getElementById('city-format').value;
+            
+            if (!query) {
+                alert('Please enter a city name');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/city?q=${encodeURIComponent(query)}&limit=${limit}&format=${format}&fuzzy=true`;
+            await makeRequest(url, 'city-results');
+        }
+
+        async function testSmartIcao() {
+            const query = document.getElementById('icao-query').value;
+            const limit = document.getElementById('icao-limit').value;
+            
+            if (!query) {
+                alert('Please enter an ICAO code');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/smart-icao?q=${encodeURIComponent(query)}&limit=${limit}`;
+            await makeRequest(url, 'icao-results');
+        }
+
+        async function testSuggestions() {
+            const query = document.getElementById('suggestions-query').value;
+            const limit = document.getElementById('suggestions-limit').value;
+            
+            if (!query) {
+                alert('Please enter a partial search term');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/suggestions?q=${encodeURIComponent(query)}&limit=${limit}`;
+            await makeRequest(url, 'suggestions-results');
+        }
+
+        async function testGetByIcao() {
+            const code = document.getElementById('data-icao-code').value;
+            
+            if (!code) {
+                alert('Please enter an ICAO code');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/icao/${code.toUpperCase()}`;
+            await makeRequest(url, 'data-icao-results');
+        }
+
+        async function testGetByIata() {
+            const code = document.getElementById('data-iata-code').value;
+            
+            if (!code) {
+                alert('Please enter an IATA code');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/iata/${code.toUpperCase()}`;
+            await makeRequest(url, 'data-iata-results');
+        }
+
+        async function testGetByCountry() {
+            const code = document.getElementById('data-country-code').value;
+            const type = document.getElementById('data-country-type').value;
+            const limit = document.getElementById('data-country-limit').value;
+            
+            if (!code) {
+                alert('Please enter a country code');
+                return;
+            }
+            
+            let url = `${API_BASE}/api/v1/airports/country/${code.toUpperCase()}?limit=${limit}`;
+            if (type) url += `&type=${type}`;
+            
+            await makeRequest(url, 'data-country-results');
+        }
+
+        async function testGetByType() {
+            const type = document.getElementById('data-type-select').value;
+            const limit = document.getElementById('data-type-limit').value;
+            
+            const url = `${API_BASE}/api/v1/airports/type/${type}?limit=${limit}`;
+            await makeRequest(url, 'data-type-results');
+        }
+
+        async function testNearbyAirports() {
+            const lat = document.getElementById('geo-lat').value;
+            const lng = document.getElementById('geo-lng').value;
+            const radius = document.getElementById('geo-radius').value;
+            const limit = document.getElementById('geo-limit').value;
+            
+            if (!lat || !lng) {
+                alert('Please enter latitude and longitude');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/airports/nearby?lat=${lat}&lng=${lng}&radius=${radius}&limit=${limit}`;
+            await makeRequest(url, 'geo-nearby-results');
+        }
+
+        async function testCountryStats() {
+            const url = `${API_BASE}/api/v1/airports/stats/countries`;
+            await makeRequest(url, 'geo-stats-results');
+        }
+
+        async function testDatabaseInfo() {
+            const url = `${API_BASE}/api/v1/airports/info`;
+            await makeRequest(url, 'geo-info-results');
+        }
+
+        async function testRunwayWeather() {
+            const icao = document.getElementById('runway-icao').value;
+            
+            if (!icao) {
+                alert('Please enter an ICAO code');
+                return;
+            }
+            
+            const url = `${API_BASE}/api/v1/runway/${icao.toUpperCase()}`;
+            await makeRequest(url, 'runway-results');
+        }
+
+        // Initialize with a welcome test
+        window.addEventListener('load', () => {
+            testDatabaseInfo();
+        });
+    </script>
+</body>
+</html>
