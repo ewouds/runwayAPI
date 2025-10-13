@@ -62,9 +62,9 @@ const searchAirports = async (req, res) => {
     }
 
     // If icao_code is null, use ident as icao_code value
-    results = results.map(airport => ({
+    results = results.map((airport) => ({
       ...airport,
-      icao_code: airport.icao_code || airport.ident || null
+      icao_code: airport.icao_code || airport.ident || null,
     }));
 
     res.json({
