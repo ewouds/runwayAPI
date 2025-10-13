@@ -1,200 +1,528 @@
-# Runway API Server
+# RunwayAPI 🛫# Runway API Server
 
-A Node.js Express API server that provides comprehensive airport runway information combined with real-time weather data (METAR) for aviation applications.
 
-## 🛫 Overview
 
-The Runway API fetches and combines airport runway data from AirportDB with current weather information (METAR) from aviation weather services. It's designed to provide pilots and aviation applications with essential runway and weather information for flight planning and operations.
+A comprehensive REST API for European airports featuring advanced fuzzy search, runway data, and METAR weather information. Built with Node.js and Express, this API provides intelligent search capabilities with typo tolerance and multiple output formats.A Node.js Express API server that provides comprehensive airport runway information combined with real-time weather data (METAR) for aviation applications.
 
-## ✨ Features
 
-- **Airport Runway Data**: Detailed runway information including dimensions, orientations, and ILS capabilities
-- **Real-time Weather**: Current METAR data from multiple weather providers
+
+## 🌟 Features## 🛫 Overview
+
+
+
+### Core FunctionalityThe Runway API fetches and combines airport runway data from AirportDB with current weather information (METAR) from aviation weather services. It's designed to provide pilots and aviation applications with essential runway and weather information for flight planning and operations.
+
+- **🗄️ Comprehensive Airport Database**: 12,228+ European airports across 52 countries
+
+- **🔍 Advanced Fuzzy Search**: Typo-tolerant search with multiple algorithms## ✨ Features
+
+- **🛫 Runway Information**: Detailed runway data with METAR weather integration
+
+- **🏙️ City-Based Search**: Search airports by city/municipality with fuzzy matching- **Airport Runway Data**: Detailed runway information including dimensions, orientations, and ILS capabilities
+
+- **📱 Multiple Output Formats**: Simple JSON format for mobile/lightweight apps- **Real-time Weather**: Current METAR data from multiple weather providers
+
 - **Multiple Data Sources**: Support for AviationWeather.gov and VATSIM METAR providers
-- **Data Validation**: Comprehensive validation of runway and weather data
-- **Error Handling**: Robust error handling with meaningful error messages
-- **CORS Support**: Configurable CORS for web applications
-- **Comprehensive Testing**: 37 tests with 80% code coverage
 
-## 🚀 Quick Start
+### Search Capabilities- **Data Validation**: Comprehensive validation of runway and weather data
 
-### Prerequisites
+- **Smart ICAO Matching**: Character transposition detection (EGKL → EGLL)- **Error Handling**: Robust error handling with meaningful error messages
 
-- Node.js 14+
-- npm
-- AirportDB API token (sign up at [airportdb.io](https://airportdb.io))
+- **Phonetic Similarity**: Soundex-based matching for similar-sounding codes- **CORS Support**: Configurable CORS for web applications
 
-### Installation
+- **Name Fuzzy Matching**: Intelligent airport name search with typo tolerance- **Comprehensive Testing**: 37 tests with 80% code coverage
 
-1. **Clone the repository**
+- **Geographical Search**: Find airports by proximity, country, or region
 
-   ```bash
-   git clone <repository-url>
+- **Real-time Suggestions**: Autocomplete-friendly search suggestions## 🚀 Quick Start
+
+
+
+## 🚀 Quick Start### Prerequisites
+
+
+
+### Prerequisites- Node.js 14+
+
+- Node.js (v16 or higher)- npm
+
+- npm or yarn package manager- AirportDB API token (sign up at [airportdb.io](https://airportdb.io))
+
+
+
+### Installation### Installation
+
+
+
+```bash1. **Clone the repository**
+
+# Clone the repository
+
+git clone <repository-url>   ```bash
+
+cd runwayAPI   git clone <repository-url>
+
    cd runwayAPI
-   ```
+
+# Install dependencies   ```
+
+npm install
 
 2. **Install dependencies**
 
-   ```bash
+# Create environment file
+
+cp .env.example .env   ```bash
+
    npm install
-   ```
 
-3. **Environment Setup**
+# Start the server   ```
 
-   Create a `.env` file in the root directory:
+npm start
 
-   ```env
-   SERVER_PORT_RUNWAY=3000
+```3. **Environment Setup**
+
+
+
+### Development Mode   Create a `.env` file in the root directory:
+
+```bash
+
+# Start with auto-reload   ```env
+
+npm run dev   SERVER_PORT_RUNWAY=3000
+
    AIRPORTDB_API_TOKEN=your_airportdb_api_token_here
-   API_VERSION=1.0.0
-   NODE_ENV=development
+
+# Run comprehensive tests   API_VERSION=1.0.0
+
+npm run test:api   NODE_ENV=development
+
    ```
 
-4. **Start the server**
+# View interactive demo
+
+npm run demo:web4. **Start the server**
+
+```
 
    ```bash
-   # Development mode
+
+## 📡 API Endpoints   # Development mode
+
    npm run dev
 
+### 🔍 Search Endpoints
+
    # Production mode
-   npm start
-   ```
 
-The server will start on the port specified in your environment variables (default: 3000).
+#### Basic Search   npm start
 
-## 📡 API Endpoints
+```bash   ```
 
-### GET `/`
+GET /api/v1/airports/search?q=London&limit=10&fuzzy=true
+
+```The server will start on the port specified in your environment variables (default: 3000).
+
+
+
+#### Fuzzy Search with Scoring## 📡 API Endpoints
+
+```bash
+
+GET /api/v1/airports/fuzzy?q=EGKL&limit=5&details=true&format=simple### GET `/`
+
+```
 
 Welcome endpoint that returns basic API information.
 
-**Response:**
+#### City-Based Search
 
-```json
+```bash**Response:**
+
+GET /api/v1/airports/city?q=Frankfurt&limit=10&fuzzy=true&format=simple
+
+``````json
+
 {
-  "code": 0,
-  "message": "Welcome to Runway API. Use /api/v1/runway/:icao to get runway data for an airport.",
-  "version": "1.0.0"
-}
+
+#### Smart ICAO Search  "code": 0,
+
+```bash  "message": "Welcome to Runway API. Use /api/v1/runway/:icao to get runway data for an airport.",
+
+GET /api/v1/airports/smart-icao?q=LFGP&limit=5  "version": "1.0.0"
+
+```}
+
 ```
+
+### 🏢 Data Endpoints
 
 ### GET `/api/v1/runway/:icao`
 
-Get runway and weather data for a specific airport.
+#### By Country
 
-**Parameters:**
+```bashGet runway and weather data for a specific airport.
 
-- `icao` (required) - ICAO airport code (e.g., KJFK, EGLL, LFPG)
+GET /api/v1/airports/country/DE?limit=20&type=large_airport
 
-**Query Parameters:**
+```**Parameters:**
 
-- `metarProvider` (optional) - Weather data provider
-  - `aviationweather` (default) - AviationWeather.gov
-  - `vatsim` - VATSIM network
 
-**Example Request:**
+
+#### By Airport Code- `icao` (required) - ICAO airport code (e.g., KJFK, EGLL, LFPG)
 
 ```bash
-curl "http://localhost:3000/api/v1/runway/KJFK?metarProvider=aviationweather"
+
+GET /api/v1/airports/icao/EGLL**Query Parameters:**
+
+GET /api/v1/airports/iata/LHR
+
+```- `metarProvider` (optional) - Weather data provider
+
+  - `aviationweather` (default) - AviationWeather.gov
+
+#### Nearby Airports  - `vatsim` - VATSIM network
+
+```bash
+
+GET /api/v1/airports/nearby?lat=48.8566&lng=2.3522&radius=1.0&limit=10**Example Request:**
+
 ```
 
-**Success Response:**
+```bash
+
+#### Statisticscurl "http://localhost:3000/api/v1/runway/KJFK?metarProvider=aviationweather"
+
+```bash```
+
+GET /api/v1/airports/stats/countries
+
+GET /api/v1/airports/info**Success Response:**
+
+```
 
 ```json
-{
-  "name": "John F Kennedy International Airport",
-  "home_link": "https://www.panynj.gov/airports/jfk.html",
-  "metar": "KJFK 101851Z 28008KT 10SM FEW250 24/18 A3012 RMK AO2 SLP198",
-  "runways": [
+
+### 🛫 Runway & Weather{
+
+```bash  "name": "John F Kennedy International Airport",
+
+GET /api/v1/runway/EGLL  "home_link": "https://www.panynj.gov/airports/jfk.html",
+
+GET /api/v1/runway/EDDF  "metar": "KJFK 101851Z 28008KT 10SM FEW250 24/18 A3012 RMK AO2 SLP198",
+
+```  "runways": [
+
     {
-      "width_ft": 200,
+
+## 💡 Format Options      "width_ft": 200,
+
       "length_ft": 14511,
-      "le_ident": "04L",
-      "he_ident": "22R",
-      "he_latitude_deg": 40.651798,
-      "he_longitude_deg": -73.776102,
-      "he_heading_degT": 223.1,
-      "le_ils": null,
-      "he_ils": "ILS",
-      "surface": "ASPH"
-    }
-  ],
-  "elevation": 4,
-  "wind_direction": 280,
-  "wind_speed": 8,
-  "icao": "KJFK",
-  "station": {
-    "icao_code": "KJFK",
+
+### Simple Format (`format=simple`)      "le_ident": "04L",
+
+Perfect for mobile apps and dropdowns:      "he_ident": "22R",
+
+```json      "he_latitude_deg": 40.651798,
+
+{      "he_longitude_deg": -73.776102,
+
+  "code": 0,      "he_heading_degT": 223.1,
+
+  "data": {      "le_ils": null,
+
+    "airports": [      "he_ils": "ILS",
+
+      {      "surface": "ASPH"
+
+        "icao_code": "EGLL",    }
+
+        "city": "London",   ],
+
+        "country": "United Kingdom"  "elevation": 4,
+
+      }  "wind_direction": 280,
+
+    ]  "wind_speed": 8,
+
+  }  "icao": "KJFK",
+
+}  "station": {
+
+```    "icao_code": "KJFK",
+
     "distance": 0
-  },
-  "time": "2024-07-10T18:51:00Z",
-  "metarData": {
-    "wind": {
-      "degrees": 280,
-      "speed_kts": 8
-    },
-    "observed": "2024-07-10T18:51:00Z"
-  }
-}
-```
 
-**Error Responses:**
+### Full Format (default)  },
 
-Airport not found:
+Complete information with fuzzy scores:  "time": "2024-07-10T18:51:00Z",
 
-```json
-{
-  "code": 2,
-  "error": "Can't find airport XXXX data. Try to search a nearest bigger airport"
-}
+```json  "metarData": {
+
+{    "wind": {
+
+  "code": 0,      "degrees": 280,
+
+  "data": {      "speed_kts": 8
+
+    "airports": [    },
+
+      {    "observed": "2024-07-10T18:51:00Z"
+
+        "icao_code": "EGLL",  }
+
+        "name": "London Heathrow Airport",}
+
+        "municipality": "London",```
+
+        "country_name": "United Kingdom",
+
+        "latitude_deg": 51.4706,**Error Responses:**
+
+        "longitude_deg": -0.461941,
+
+        "fuzzyScore": 96,Airport not found:
+
+        "matchDetails": {
+
+          "matches": ["ICAO fuzzy match (93.3%)", "Likely character transposition"]```json
+
+        }{
+
+      }  "code": 2,
+
+    ]  "error": "Can't find airport XXXX data. Try to search a nearest bigger airport"
+
+  }}
+
+}```
+
 ```
 
 No runway data:
 
+## 🧠 Fuzzy Search Examples
+
 ```json
-{
+
+The API intelligently handles common typos and variations:{
+
   "code": 3,
-  "error": "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport"
-}
-```
 
-Invalid runway data:
+| Query | Finds | Match Type |  "error": "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport"
 
-```json
+|-------|-------|------------|}
+
+| `EGKL` | EGLL (Heathrow) | Character transposition |```
+
+| `LFGP` | LFPG (Charles de Gaulle) | Character swap |
+
+| `Parris` | Paris airports | City name typo |Invalid runway data:
+
+| `Frankfrt` | Frankfurt airports | Missing vowel |
+
+| `EGL` | EGLL (Heathrow) | Partial ICAO |```json
+
 {
-  "code": 4,
+
+## 🌐 Interactive Demo  "code": 4,
+
   "error": "Sorry. The requested airport has invalid runway data, so it can't be displayed. Try other nearest airport"
-}
+
+Visit the built-in web interface:}
+
+```bash```
+
+http://localhost:3002/demo
+
+```### Airport Database API Endpoints
+
+
+
+Features:The API also provides comprehensive access to the EU airports database with the following endpoints:
+
+- Real-time fuzzy search
+
+- Match confidence scoring#### GET `/api/v1/airports/info`
+
+- Multiple search modesGet general database information and available endpoints.
+
+- Copy-friendly results
+
+#### GET `/api/v1/airports/search?q={searchTerm}&limit={limit}`
+
+## 🏗️ Project StructureSearch airports by name, ICAO code, IATA code, or municipality.
+
+
+
+```**Example:**
+
+runwayAPI/```bash
+
+├── api/curl "http://localhost:3002/api/v1/airports/search?q=London&limit=5"
+
+│   ├── airports.cjs        # Airport database endpoints```
+
+│   └── runway.cjs          # Runway & weather endpoints
+
+├── airportDB/#### GET `/api/v1/airports/country/{countryCode}?limit={limit}&type={type}`
+
+│   ├── database.cjs        # SQLite database interfaceGet airports by country (2-letter ISO code).
+
+│   ├── eu-airports.db      # SQLite database file
+
+│   └── demo.cjs           # Database demo script**Example:**
+
+├── helpers/```bash
+
+│   ├── fuzzySearch.cjs     # Fuzzy search algorithmscurl "http://localhost:3002/api/v1/airports/country/GB?type=large_airport"
+
+│   └── downloadData.cjs    # Data fetching utilities```
+
+├── tests/
+
+│   └── comprehensive-test.cjs # Complete API test suite#### GET `/api/v1/airports/icao/{icaoCode}`
+
+├── __tests__/              # Jest unit testsGet detailed airport information by ICAO code.
+
+├── demo.html              # Interactive web demo
+
+├── main.cjs               # Express server#### GET `/api/v1/airports/iata/{iataCode}`
+
+└── docs/                  # Documentation filesGet detailed airport information by IATA code.
+
 ```
+
+#### GET `/api/v1/airports/type/{airportType}?limit={limit}`
+
+## 🧪 TestingGet airports by type (large_airport, medium_airport, small_airport, heliport, etc.).
+
+
+
+```bash#### GET `/api/v1/airports/nearby?lat={lat}&lng={lng}&radius={radius}&limit={limit}`
+
+# Run comprehensive API testsFind airports near specific coordinates.
+
+npm run test:api
+
+**Example:**
+
+# Run unit tests with Jest```bash
+
+npm testcurl "http://localhost:3002/api/v1/airports/nearby?lat=48.8566&lng=2.3522&radius=2.0"
+
+```
+
+# Run with coverage
+
+npm run test:coverage#### GET `/api/v1/airports/stats/countries`
+
+Get statistical information about airports by country.
+
+# Test specific endpoints
+
+curl "http://localhost:3002/api/v1/airports/city?q=London&format=simple"📋 **For complete API documentation, see [API_DOCUMENTATION.md](API_DOCUMENTATION.md)**
+
+```
+
+### 🎮 Interactive Demo
+
+## 📊 Database Statistics
+
+Try the live HTML demo for airport search:
+
+- **Total Airports**: 12,228- **URL**: http://localhost:3002/demo
+
+- **Countries Covered**: 52 (European region)- **Features**: Real-time ICAO code search, autocomplete, detailed airport info
+
+- **Large Airports**: 118- **Usage**: Start typing any 3+ character ICAO code (e.g., "EGL", "LFP", "EDD")
+
+- **Scheduled Service**: 659 airports
+
+- **Database Size**: ~15MB optimized SQLite📋 **For demo instructions, see [DEMO.md](DEMO.md)**
+
+- **Search Performance**: <100ms average response time
 
 ## 🏗️ Project Structure
 
+## 🔧 Configuration
+
 ```
-runwayAPI/
-├── main.cjs                 # Express server entry point
-├── package.json             # Dependencies and scripts
-├── jest.config.js          # Jest test configuration
-├── .env                    # Environment variables (create this)
-├── .env.test              # Test environment variables
-├── api/
-│   └── runway.cjs         # Main runway API endpoint
-├── helpers/
-│   └── downloadData.cjs   # HTTP request utility
+
+Environment variables (`.env`):runwayAPI/
+
+```env├── main.cjs                 # Express server entry point
+
+SERVER_PORT_RUNWAY=3002├── package.json             # Dependencies and scripts
+
+API_VERSION=1.0.0├── jest.config.js          # Jest test configuration
+
+NODE_ENV=development├── .env                    # Environment variables (create this)
+
+```├── .env.test              # Test environment variables
+
+├── demo.html              # Interactive airport search demo page
+
+## 📈 Performance Features├── API_DOCUMENTATION.md    # Complete airport API documentation
+
+├── DEMO.md                # Demo page documentation
+
+- **In-Memory Caching**: Fuzzy search optimizations├── test-api.cjs           # API endpoint testing script
+
+- **Database Indexing**: 7 strategic indexes for fast queries├── api/
+
+- **Response Compression**: Automatic gzip compression│   ├── runway.cjs         # Main runway API endpoint
+
+- **Connection Pooling**: Efficient SQLite connection management│   └── airports.cjs       # Airport database API endpoints
+
+- **Format Optimization**: 70-83% bandwidth reduction with simple format├── airportDB/
+
+│   ├── eu-airports.csv    # Original CSV airport data
+
+## 🤝 Contributing│   ├── eu-airports.db     # SQLite database (generated)
+
+│   ├── csv_to_sqlite.py   # CSV to SQLite converter
+
+1. Fork the repository│   ├── database.cjs       # Database interface class
+
+2. Create a feature branch: `git checkout -b feature/amazing-feature`│   ├── demo.cjs           # Database usage examples
+
+3. Commit changes: `git commit -m 'Add amazing feature'`│   └── README.md          # Database documentation
+
+4. Push to branch: `git push origin feature/amazing-feature`├── helpers/
+
+5. Open a Pull Request│   └── downloadData.cjs   # HTTP request utility
+
 └── __tests__/             # Test suite
-    ├── setup.js           # Test configuration
+
+## 📄 License    ├── setup.js           # Test configuration
+
     ├── __mocks__/         # Mock data
-    ├── api/               # API endpoint tests
+
+This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.    ├── api/               # API endpoint tests
+
     ├── helpers/           # Helper function tests
-    └── *.test.js         # Various test files
+
+## 🆘 Support    └── *.test.js         # Various test files
+
 ```
 
-## 🧪 Testing
+- 📚 **Documentation**: Check the `/docs` folder for detailed guides
 
-The project includes a comprehensive test suite with 37 tests covering:
+- 🐛 **Issues**: Report bugs via GitHub Issues## 🧪 Testing
 
-- Unit tests for individual functions
+- 💡 **Feature Requests**: Open a discussion for new features
+
+- 📧 **Questions**: Use GitHub Discussions for general questionsThe project includes a comprehensive test suite with 37 tests covering:
+
+
+
+---- Unit tests for individual functions
+
 - Integration tests for API endpoints
-- Error handling scenarios
+
+Built with ❤️ for the aviation community- Error handling scenarios
 - Data validation and transformation
 
 ### Running Tests

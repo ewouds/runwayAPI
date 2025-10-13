@@ -1,7 +1,7 @@
 {
-  "name": "doc-intel-express-wrapper",
+  "name": "runway-api",
   "version": "1.0.0",
-  "description": "An Express.js wrapper for Azure Document Intelligence API to analyze documents and retrieve flight log tables.",
+  "description": "A comprehensive REST API for European airports with fuzzy search capabilities, runway data, and METAR weather information.",
   "main": "main.cjs",
   "scripts": {
     "start": "node main.cjs",
@@ -11,23 +11,21 @@
     "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
     "test:ci": "jest --ci --coverage --watchAll=false",
-    "audit:ci": "npm audit --omit=dev --audit-level=high",
-    "audit:full": "npm audit",
-    "scan:osv": "npx --yes osv-scanner --lockfile=package-lock.json",
-    "deps:outdated": "npm outdated || true"
+    "test:api": "node tests/comprehensive-test.cjs",
+    "demo:db": "node airportDB/demo.cjs",
+    "demo:web": "echo 'Demo available at: http://localhost:3002/demo' && start http://localhost:3002/demo",
+    "convert:csv": "cd airportDB && python csv_to_sqlite.py",
+    "cleanup": "npm prune && npm audit fix --omit=dev",
+    "deps:check": "npm outdated || true",
+    "deps:update": "npm update"
   },
   "dependencies": {
-    "@azure/ai-form-recognizer": "^5.0.0",
     "aewx-metar-parser": "^1.0.0",
-    "axios": "^1.10.0",
+    "axios": "^1.12.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.17.1",
-    "form-data": "2.5.5",
-    "multer": "^2.0.1"
-  },
-  "overrides": {
-    "form-data": "2.5.5"
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

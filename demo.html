@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Database API Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .search-section {
+            margin-bottom: 40px;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .search-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .search-help {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            color: #3498db;
+            display: none;
+        }
+
+        .results-container {
+            margin-top: 30px;
+        }
+
+        .results-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            border-left: 4px solid #3498db;
+            margin-bottom: 0;
+        }
+
+        .results-count {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .airport-list {
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .airport-item {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .airport-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .airport-item:last-child {
+            border-bottom: none;
+        }
+
+        .airport-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .airport-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .airport-codes {
+            display: flex;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .code-badge {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .icao-code {
+            background-color: #e74c3c;
+        }
+
+        .iata-code {
+            background-color: #27ae60;
+        }
+
+        .airport-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .detail-item i {
+            width: 16px;
+            text-align: center;
+        }
+
+        .airport-type {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #555;
+            margin-left: 10px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error-message {
+            background-color: #ffeaea;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .stats-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .api-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .api-url {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .airport-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .airport-codes {
+                margin-left: 0;
+            }
+            
+            .airport-details {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+        .fuzzy-score {
+            display: inline-block;
+            padding: 2px 6px;
+            background-color: #9b59b6;
+            color: white;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 8px;
+            cursor: help;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                ✈️ Airport Database API Demo
+            </h1>
+            <p>Real-time ICAO code search with live results</p>
+        </div>
+        
+        <div class="content">
+            <div class="search-section">
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Type ICAO code (e.g., EGL, LFP, EDD) - Try typos like EGKL or LFGP!" 
+                        maxlength="6"
+                        autocomplete="off"
+                    >
+                    <div class="search-help">
+                        🧠 Smart fuzzy search - finds airports even with typos! Try "EGKL" instead of "EGLL"
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    🔍 Searching airports...
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+            
+            <div class="results-container" id="resultsContainer" style="display: none;">
+                <div class="results-header">
+                    <div class="results-count" id="resultsCount"></div>
+                </div>
+                <div class="airport-list" id="airportList"></div>
+            </div>
+            
+            <div class="stats-section">
+                <div class="api-info">
+                    <strong>API Endpoint:</strong>
+                    <div class="api-url" id="apiUrl">Ready to search...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3002/api/v1/airports';
+        const searchInput = document.getElementById('searchInput');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsCount = document.getElementById('resultsCount');
+        const airportList = document.getElementById('airportList');
+        const apiUrl = document.getElementById('apiUrl');
+        
+        let searchTimeout;
+        let currentSearch = '';
+
+        // Debounced search function
+        function debounceSearch(query) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 300); // 300ms delay
+        }
+
+        // Main search functionality with fuzzy search
+        async function performSearch(query) {
+            if (query.length < 2) {
+                hideResults();
+                return;
+            }
+
+            currentSearch = query;
+            showLoading();
+            hideError();
+
+            try {
+                // Use fuzzy search for better results
+                const searchUrl = `${API_BASE}/search?q=${encodeURIComponent(query)}&limit=20&fuzzy=true`;
+                apiUrl.textContent = searchUrl;
+                
+                const response = await fetch(searchUrl);
+                const data = await response.json();
+
+                hideLoading();
+
+                if (data.code === 0) {
+                    displayResults(data.data, query);
+                } else {
+                    showError(`API Error: ${data.message}`);
+                }
+            } catch (error) {
+                hideLoading();
+                showError(`Network Error: ${error.message}`);
+                console.error('Search error:', error);
+            }
+        }
+
+        // Display search results
+        function displayResults(data, searchQuery) {
+            if (data.airports.length === 0) {
+                showNoResults();
+                return;
+            }
+
+            resultsCount.textContent = `Found ${data.count} airport${data.count !== 1 ? 's' : ''} matching "${searchQuery}"`;
+            
+            airportList.innerHTML = data.airports.map(airport => {
+                const icaoCode = airport.icao_code || 'N/A';
+                const iataCode = airport.iata_code || 'N/A';
+                const elevation = airport.elevation_ft ? `${airport.elevation_ft} ft` : 'N/A';
+                const fuzzyScore = airport.fuzzyScore ? Math.round(airport.fuzzyScore) : null;
+                
+                return `
+                    <div class="airport-item" onclick="selectAirport('${airport.icao_code || airport.ident}')">
+                        <div class="airport-header">
+                            <div class="airport-name">
+                                ${highlightMatch(airport.name, searchQuery)}
+                                <span class="airport-type">${formatAirportType(airport.type)}</span>
+                                ${fuzzyScore ? `<span class="fuzzy-score" title="Fuzzy match score">🎯 ${fuzzyScore}%</span>` : ''}
+                            </div>
+                            <div class="airport-codes">
+                                <span class="code-badge icao-code">${highlightMatch(icaoCode, searchQuery)}</span>
+                                <span class="code-badge iata-code">${highlightMatch(iataCode, searchQuery)}</span>
+                            </div>
+                        </div>
+                        <div class="airport-details">
+                            <div class="detail-item">
+                                <i>📍</i>
+                                <span>${airport.municipality || 'N/A'}, ${airport.country_name || 'N/A'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i>📏</i>
+                                <span>Elevation: ${elevation}</span>
+                            </div>
+                            ${airport.latitude_deg && airport.longitude_deg ? `
+                            <div class="detail-item">
+                                <i>🗺️</i>
+                                <span>${airport.latitude_deg.toFixed(4)}, ${airport.longitude_deg.toFixed(4)}</span>
+                            </div>
+                            ` : ''}
+                            <div class="detail-item">
+                                <i>✈️</i>
+                                <span>${airport.scheduled_service ? 'Scheduled Service' : 'No Scheduled Service'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            resultsContainer.style.display = 'block';
+        }
+
+        // Highlight matching text
+        function highlightMatch(text, query) {
+            if (!text || !query || text === 'N/A') return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Format airport type for display
+        function formatAirportType(type) {
+            return type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // Handle airport selection
+        async function selectAirport(icaoCode) {
+            if (!icaoCode || icaoCode === 'N/A') return;
+            
+            try {
+                showLoading();
+                const detailUrl = `${API_BASE}/icao/${icaoCode}`;
+                const response = await fetch(detailUrl);
+                const data = await response.json();
+                hideLoading();
+                
+                if (data.code === 0) {
+                    showAirportDetails(data.data.airport);
+                } else {
+                    showError(`Could not fetch details for ${icaoCode}: ${data.message}`);
+                }
+            } catch (error) {
+                hideLoading();
+                showError(`Error fetching airport details: ${error.message}`);
+            }
+        }
+
+        // Show detailed airport information
+        function showAirportDetails(airport) {
+            const details = `
+                🛫 Airport Details:
+                
+                Name: ${airport.name}
+                ICAO: ${airport.icao_code || 'N/A'}
+                IATA: ${airport.iata_code || 'N/A'}
+                Type: ${formatAirportType(airport.type)}
+                Location: ${airport.municipality}, ${airport.country_name}
+                Coordinates: ${airport.latitude_deg}, ${airport.longitude_deg}
+                Elevation: ${airport.elevation_ft} ft
+                Scheduled Service: ${airport.scheduled_service ? 'Yes' : 'No'}
+                ${airport.home_link ? `Website: ${airport.home_link}` : ''}
+                ${airport.wikipedia_link ? `Wikipedia: ${airport.wikipedia_link}` : ''}
+            `;
+            
+            alert(details);
+        }
+
+        // Show loading state
+        function showLoading() {
+            loading.style.display = 'block';
+            resultsContainer.style.display = 'none';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            resultsContainer.style.display = 'none';
+        }
+
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Show no results message
+        function showNoResults() {
+            resultsCount.textContent = `No airports found matching "${currentSearch}"`;
+            airportList.innerHTML = '<div class="no-results">No airports found. Try a different search term.</div>';
+            resultsContainer.style.display = 'block';
+        }
+
+        // Hide results
+        function hideResults() {
+            resultsContainer.style.display = 'none';
+            apiUrl.textContent = 'Ready to search...';
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', function(e) {
+            const query = e.target.value.trim().toUpperCase();
+            e.target.value = query; // Ensure uppercase display
+            
+            if (query.length >= 3) {
+                debounceSearch(query);
+            } else {
+                hideResults();
+                hideError();
+            }
+        });
+
+        // Handle Enter key
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = e.target.value.trim();
+                if (query.length >= 3) {
+                    performSearch(query);
+                }
+            }
+        });
+
+        // Focus on search input when page loads
+        window.addEventListener('load', function() {
+            searchInput.focus();
+        });
+
+        // Demo: Auto-fill some example searches including fuzzy examples
+        const examples = [
+            'EGL',    // Normal search
+            'EGKL',   // Typo: should find EGLL (Heathrow)
+            'LFP',    // Normal search
+            'LFGP',   // Typo: should find LFPG (Charles de Gaulle)
+            'EDD',    // Normal search
+            'EDDF',   // Exact match
+            'HEATHRO', // Name search with typo
+            'GATWICC'  // Name search with typo
+        ];
+        let exampleIndex = 0;
+
+        // Add demo helpers
+        document.addEventListener('keydown', function(e) {
+            // Press F1 for demo examples
+            if (e.key === 'F1') {
+                e.preventDefault();
+                const example = examples[exampleIndex % examples.length];
+                searchInput.value = example;
+                searchInput.dispatchEvent(new Event('input'));
+                exampleIndex++;
+                
+                // Show which example we're using
+                const exampleType = ['Normal', 'Typo (EGLL)', 'Normal', 'Typo (LFPG)', 'Normal', 'Exact', 'Name+Typo', 'Name+Typo'][exampleIndex - 1];
+                console.log(`Example ${exampleIndex}: "${example}" (${exampleType})`);
+            }
+        });
+
+        console.log('🧠 Fuzzy Airport Search Demo loaded!');
+        console.log('Press F1 to cycle through examples (including typos!)');
+        console.log('Try these fuzzy searches:');
+        console.log('- EGKL (finds EGLL - Heathrow)');
+        console.log('- LFGP (finds LFPG - Charles de Gaulle)');
+        console.log('- HEATHRO (finds Heathrow Airport)');
+        console.log('- GATWICC (finds Gatwick Airport)');
+    </script>
+</body>
+</html>
