@@ -17,18 +17,20 @@ app.use((req, res, next) => {
 });
 
 // Serve static files (HTML demo)
-app.use(express.static('.', {
-  index: false, // Don't serve index.html automatically
-  setHeaders: (res, path) => {
-    if (path.endsWith('.html')) {
-      res.setHeader('Content-Type', 'text/html');
-    }
-  }
-}));
+app.use(
+  express.static(".", {
+    index: false, // Don't serve index.html automatically
+    setHeaders: (res, path) => {
+      if (path.endsWith(".html")) {
+        res.setHeader("Content-Type", "text/html");
+      }
+    },
+  })
+);
 
 // Demo page endpoint
-app.get('/demo', (req, res) => {
-  res.sendFile(__dirname + '/demo.html');
+app.get("/demo", (req, res) => {
+  res.sendFile(__dirname + "/demo.html");
 });
 
 // Runway API endpoints
@@ -64,9 +66,9 @@ app.get("/", (req, res) => {
         byType: "/api/v1/airports/type/:airportType - Get airports by type",
         nearby: "/api/v1/airports/nearby?lat=&lng= - Get nearby airports",
         stats: "/api/v1/airports/stats/countries - Get country statistics",
-        info: "/api/v1/airports/info - Get database information"
-      }
-    }
+        info: "/api/v1/airports/info - Get database information",
+      },
+    },
   });
 });
 

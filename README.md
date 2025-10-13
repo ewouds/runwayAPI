@@ -1,14 +1,8 @@
 # RunwayAPI 🛫# Runway API Server
 
-
-
 A comprehensive REST API for European airports featuring advanced fuzzy search, runway data, and METAR weather information. Built with Node.js and Express, this API provides intelligent search capabilities with typo tolerance and multiple output formats.A Node.js Express API server that provides comprehensive airport runway information combined with real-time weather data (METAR) for aviation applications.
 
-
-
 ## 🌟 Features## 🛫 Overview
-
-
 
 ### Core FunctionalityThe Runway API fetches and combines airport runway data from AirportDB with current weather information (METAR) from aviation weather services. It's designed to provide pilots and aviation applications with essential runway and weather information for flight planning and operations.
 
@@ -36,11 +30,7 @@ A comprehensive REST API for European airports featuring advanced fuzzy search, 
 
 - **Real-time Suggestions**: Autocomplete-friendly search suggestions## 🚀 Quick Start
 
-
-
 ## 🚀 Quick Start### Prerequisites
-
-
 
 ### Prerequisites- Node.js 14+
 
@@ -48,13 +38,9 @@ A comprehensive REST API for European airports featuring advanced fuzzy search, 
 
 - npm or yarn package manager- AirportDB API token (sign up at [airportdb.io](https://airportdb.io))
 
-
-
 ### Installation### Installation
 
-
-
-```bash1. **Clone the repository**
+````bash1. **Clone the repository**
 
 # Clone the repository
 
@@ -98,13 +84,13 @@ npm run dev   SERVER_PORT_RUNWAY=3000
 
 npm run test:api   NODE_ENV=development
 
-   ```
+````
 
 # View interactive demo
 
 npm run demo:web4. **Start the server**
 
-```
+````
 
    ```bash
 
@@ -132,13 +118,13 @@ GET /api/v1/airports/search?q=London&limit=10&fuzzy=true
 
 GET /api/v1/airports/fuzzy?q=EGKL&limit=5&details=true&format=simple### GET `/`
 
-```
+````
 
 Welcome endpoint that returns basic API information.
 
 #### City-Based Search
 
-```bash**Response:**
+```````bash**Response:**
 
 GET /api/v1/airports/city?q=Frankfurt&limit=10&fuzzy=true&format=simple
 
@@ -154,7 +140,7 @@ GET /api/v1/airports/smart-icao?q=LFGP&limit=5  "version": "1.0.0"
 
 ```}
 
-```
+```````
 
 ### 🏢 Data Endpoints
 
@@ -162,7 +148,7 @@ GET /api/v1/airports/smart-icao?q=LFGP&limit=5  "version": "1.0.0"
 
 #### By Country
 
-```bashGet runway and weather data for a specific airport.
+````bashGet runway and weather data for a specific airport.
 
 GET /api/v1/airports/country/DE?limit=20&type=large_airport
 
@@ -188,9 +174,9 @@ GET /api/v1/airports/iata/LHR
 
 GET /api/v1/airports/nearby?lat=48.8566&lng=2.3522&radius=1.0&limit=10**Example Request:**
 
-```
+````
 
-```bash
+````bash
 
 #### Statisticscurl "http://localhost:3000/api/v1/runway/KJFK?metarProvider=aviationweather"
 
@@ -200,9 +186,9 @@ GET /api/v1/airports/stats/countries
 
 GET /api/v1/airports/info**Success Response:**
 
-```
+````
 
-```json
+````json
 
 ### 🛫 Runway & Weather{
 
@@ -298,13 +284,13 @@ Complete information with fuzzy scores:  "time": "2024-07-10T18:51:00Z",
 
 }```
 
-```
+````
 
 No runway data:
 
 ## 🧠 Fuzzy Search Examples
 
-```json
+````json
 
 The API intelligently handles common typos and variations:{
 
@@ -392,13 +378,11 @@ runwayAPI/```bash
 
 └── docs/                  # Documentation filesGet detailed airport information by IATA code.
 
-```
+````
 
 #### GET `/api/v1/airports/type/{airportType}?limit={limit}`
 
 ## 🧪 TestingGet airports by type (large_airport, medium_airport, small_airport, heliport, etc.).
-
-
 
 ```bash#### GET `/api/v1/airports/nearby?lat={lat}&lng={lng}&radius={radius}&limit={limit}`
 
@@ -448,7 +432,7 @@ Try the live HTML demo for airport search:
 
 ## 🔧 Configuration
 
-```
+````
 
 Environment variables (`.env`):runwayAPI/
 
@@ -506,7 +490,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support    └── *.test.js         # Various test files
 
-```
+````
 
 - 📚 **Documentation**: Check the `/docs` folder for detailed guides
 
@@ -516,13 +500,12 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 - 📧 **Questions**: Use GitHub Discussions for general questionsThe project includes a comprehensive test suite with 37 tests covering:
 
-
-
 ---- Unit tests for individual functions
 
 - Integration tests for API endpoints
 
 Built with ❤️ for the aviation community- Error handling scenarios
+
 - Data validation and transformation
 
 ### Running Tests

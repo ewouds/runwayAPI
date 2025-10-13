@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
@@ -240,16 +241,16 @@
             .content {
                 padding: 20px;
             }
-            
+
             .airport-header {
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .airport-codes {
                 margin-left: 0;
             }
-            
+
             .airport-details {
                 flex-direction: column;
                 gap: 8px;
@@ -273,6 +274,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -281,37 +283,32 @@
             </h1>
             <p>Real-time ICAO code search with live results</p>
         </div>
-        
+
         <div class="content">
             <div class="search-section">
                 <div class="search-container">
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        class="search-input" 
-                        placeholder="Type ICAO code (e.g., EGL, LFP, EDD) - Try typos like EGKL or LFGP!" 
-                        maxlength="6"
-                        autocomplete="off"
-                    >
+                    <input type="text" id="searchInput" class="search-input"
+                        placeholder="Type ICAO code (e.g., EGL, LFP, EDD) - Try typos like EGKL or LFGP!" maxlength="6"
+                        autocomplete="off">
                     <div class="search-help">
                         🧠 Smart fuzzy search - finds airports even with typos! Try "EGKL" instead of "EGLL"
                     </div>
                 </div>
-                
+
                 <div class="loading" id="loading">
                     🔍 Searching airports...
                 </div>
-                
+
                 <div class="error-message" id="errorMessage"></div>
             </div>
-            
+
             <div class="results-container" id="resultsContainer" style="display: none;">
                 <div class="results-header">
                     <div class="results-count" id="resultsCount"></div>
                 </div>
                 <div class="airport-list" id="airportList"></div>
             </div>
-            
+
             <div class="stats-section">
                 <div class="api-info">
                     <strong>API Endpoint:</strong>
@@ -330,7 +327,7 @@
         const resultsCount = document.getElementById('resultsCount');
         const airportList = document.getElementById('airportList');
         const apiUrl = document.getElementById('apiUrl');
-        
+
         let searchTimeout;
         let currentSearch = '';
 
@@ -357,7 +354,7 @@
                 // Use fuzzy search for better results
                 const searchUrl = `${API_BASE}/search?q=${encodeURIComponent(query)}&limit=20&fuzzy=true`;
                 apiUrl.textContent = searchUrl;
-                
+
                 const response = await fetch(searchUrl);
                 const data = await response.json();
 
@@ -383,13 +380,13 @@
             }
 
             resultsCount.textContent = `Found ${data.count} airport${data.count !== 1 ? 's' : ''} matching "${searchQuery}"`;
-            
+
             airportList.innerHTML = data.airports.map(airport => {
                 const icaoCode = airport.icao_code || 'N/A';
                 const iataCode = airport.iata_code || 'N/A';
                 const elevation = airport.elevation_ft ? `${airport.elevation_ft} ft` : 'N/A';
                 const fuzzyScore = airport.fuzzyScore ? Math.round(airport.fuzzyScore) : null;
-                
+
                 return `
                     <div class="airport-item" onclick="selectAirport('${airport.icao_code || airport.ident}')">
                         <div class="airport-header">
@@ -426,7 +423,7 @@
                     </div>
                 `;
             }).join('');
-            
+
             resultsContainer.style.display = 'block';
         }
 
@@ -445,14 +442,14 @@
         // Handle airport selection
         async function selectAirport(icaoCode) {
             if (!icaoCode || icaoCode === 'N/A') return;
-            
+
             try {
                 showLoading();
                 const detailUrl = `${API_BASE}/icao/${icaoCode}`;
                 const response = await fetch(detailUrl);
                 const data = await response.json();
                 hideLoading();
-                
+
                 if (data.code === 0) {
                     showAirportDetails(data.data.airport);
                 } else {
@@ -480,7 +477,7 @@
                 ${airport.home_link ? `Website: ${airport.home_link}` : ''}
                 ${airport.wikipedia_link ? `Wikipedia: ${airport.wikipedia_link}` : ''}
             `;
-            
+
             alert(details);
         }
 
@@ -521,10 +518,10 @@
         }
 
         // Event listeners
-        searchInput.addEventListener('input', function(e) {
+        searchInput.addEventListener('input', function (e) {
             const query = e.target.value.trim().toUpperCase();
             e.target.value = query; // Ensure uppercase display
-            
+
             if (query.length >= 3) {
                 debounceSearch(query);
             } else {
@@ -534,7 +531,7 @@
         });
 
         // Handle Enter key
-        searchInput.addEventListener('keypress', function(e) {
+        searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 const query = e.target.value.trim();
                 if (query.length >= 3) {
@@ -544,7 +541,7 @@
         });
 
         // Focus on search input when page loads
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             searchInput.focus();
         });
 
@@ -562,7 +559,7 @@
         let exampleIndex = 0;
 
         // Add demo helpers
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             // Press F1 for demo examples
             if (e.key === 'F1') {
                 e.preventDefault();
@@ -570,7 +567,7 @@
                 searchInput.value = example;
                 searchInput.dispatchEvent(new Event('input'));
                 exampleIndex++;
-                
+
                 // Show which example we're using
                 const exampleType = ['Normal', 'Typo (EGLL)', 'Normal', 'Typo (LFPG)', 'Normal', 'Exact', 'Name+Typo', 'Name+Typo'][exampleIndex - 1];
                 console.log(`Example ${exampleIndex}: "${example}" (${exampleType})`);
@@ -586,4 +583,5 @@
         console.log('- GATWICC (finds Gatwick Airport)');
     </script>
 </body>
+
 </html>
