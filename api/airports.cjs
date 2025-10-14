@@ -63,14 +63,14 @@ const searchAirports = async (req, res) => {
 
     // Helper function to validate ICAO code format (4 alphanumeric characters)
     const isValidICAO = (code) => {
-      return code && typeof code === 'string' && /^[A-Z0-9]{4}$/i.test(code);
+      return code && typeof code === "string" && /^[A-Z0-9]{4}$/i.test(code);
     };
 
     // Filter and validate ICAO codes, use ident if icao_code is invalid
     results = results
       .map((airport) => {
         let validIcaoCode = null;
-        
+
         // Check if current icao_code is valid
         if (isValidICAO(airport.icao_code)) {
           validIcaoCode = airport.icao_code.toUpperCase();
@@ -79,7 +79,7 @@ const searchAirports = async (req, res) => {
         else if (isValidICAO(airport.ident)) {
           validIcaoCode = airport.ident.toUpperCase();
         }
-        
+
         // Only return airport if we found a valid ICAO code
         if (validIcaoCode) {
           return {
@@ -87,7 +87,7 @@ const searchAirports = async (req, res) => {
             icao_code: validIcaoCode,
           };
         }
-        
+
         return null; // Mark for filtering
       })
       .filter((airport) => airport !== null); // Remove airports without valid ICAO codes
