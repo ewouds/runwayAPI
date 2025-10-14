@@ -28,7 +28,7 @@ Accept: application/json
 
 ### Basic Airport Search - London (Simple Format)
 GET {{baseUrl}}/api/{{apiVersion}}/airports/search
-  ?q=Midd
+  ?q=Deu
   &limit=5
   &format=simple
   &fuzzy=true
@@ -36,7 +36,7 @@ Accept: application/json
 
 ### Basic Airport Search - Paris (Full Format)
 GET {{baseUrl}}/api/{{apiVersion}}/airports/search
-  ?q=Midd
+  ?q=Deur
   &limit=3
   &format=full
   &fuzzy=true
