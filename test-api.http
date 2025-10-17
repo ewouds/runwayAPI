@@ -28,7 +28,7 @@ Accept: application/json
 
 ### Basic Airport Search - London (Simple Format)
 GET {{baseUrl}}/api/{{apiVersion}}/airports/search
-  ?q=Deu
+  ?q=MIDD
   &limit=5
   &format=simple
   &fuzzy=true

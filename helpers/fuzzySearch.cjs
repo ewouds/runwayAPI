@@ -183,9 +183,10 @@ class FuzzySearch {
       breakdown: {},
     };
 
-    // ICAO code matching
-    if (airport.icao_code) {
-      const icao = airport.icao_code.toUpperCase();
+    // ICAO code matching (check both icao_code and ident fields)
+    const icaoCode = airport.icao_code || airport.ident;
+    if (icaoCode) {
+      const icao = icaoCode.toUpperCase();
 
       if (icao === queryUpper) {
         score += this.weights.icao_exact;
@@ -342,9 +343,9 @@ class FuzzySearch {
     }
 
     // Phonetic matching for codes (helpful for similar sounding codes)
-    if (query.length >= 3 && airport.icao_code) {
+    if (query.length >= 3 && icaoCode) {
       const querySoundex = this.soundex(query);
-      const icaoSoundex = this.soundex(airport.icao_code);
+      const icaoSoundex = this.soundex(icaoCode);
 
       if (querySoundex === icaoSoundex && querySoundex !== "0000") {
         score += 20; // Bonus for phonetic similarity
@@ -354,8 +355,8 @@ class FuzzySearch {
     }
 
     // Character transposition tolerance (common typos)
-    if (query.length === 4 && airport.icao_code && airport.icao_code.length === 4) {
-      const transposed = this.checkTransposition(query.toUpperCase(), airport.icao_code);
+    if (query.length === 4 && icaoCode && icaoCode.length === 4) {
+      const transposed = this.checkTransposition(query.toUpperCase(), icaoCode);
       if (transposed) {
         score += 40; // Bonus for likely transposition
         details.matches.push("Likely character transposition");
@@ -431,8 +432,9 @@ class FuzzySearch {
 
     // Collect ICAO codes that start with the query
     airports.forEach((airport) => {
-      if (airport.icao_code && airport.icao_code.startsWith(queryUpper)) {
-        suggestions.add(airport.icao_code);
+      const icaoCode = airport.icao_code || airport.ident;
+      if (icaoCode && icaoCode.startsWith(queryUpper)) {
+        suggestions.add(icaoCode);
       }
       if (airport.iata_code && airport.iata_code.startsWith(queryUpper) && suggestions.size < limit) {
         suggestions.add(airport.iata_code);
