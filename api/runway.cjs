@@ -3,6 +3,8 @@ const metarParser = require("aewx-metar-parser");
 
 const createMetarUrl = (provider, icao) => {
   switch (provider.toLowerCase()) {
+    case "checkwx":
+      return `https://api.checkwx.com/metar/${icao}/nearest?x-api-key=${process.env.CHECKWX_API_KEY}`; //'https://api.checkwx.com/metar/EBZR/nearest
     case "vatsim":
       return `https://metar.vatsim.net/${icao}`;
     case "aviationweather":
@@ -22,13 +24,13 @@ const isString = (value) => {
 };
 
 const runwayAPI = async (req, res) => {
-  console.log("runwayAPI", req.params);
+  //console.log("runwayAPI", req.params);
   try {
     const { icao } = req.params;
     const metarProvider = req.query.metarProvider || "aviationweather";
     const airportUrl = createAirportUrl(icao);
     const airportDataRaw = await downloadFile(airportUrl);
-    //console.debug(airportDataRaw);
+    // console.debug(airportDataRaw);
     const airportData = JSON.parse(airportDataRaw);
     // console.debug(`Airport data for ${icao.toUpperCase()}:`, airportData);
 
@@ -51,9 +53,9 @@ const runwayAPI = async (req, res) => {
       icao_code: airportData.icao_code,
       distance: 0,
     };
-    if (airportData.station && airportData.station.icao_code !== airportData.icao_code) {
-      station = airportData.station;
-    }
+    //  if (airportData.station && airportData.station.icao_code !== airportData.icao_code) {
+    //    station = airportData.station;
+    //  }
 
     const runways = airportData.runways.map((runway) => {
       return {
@@ -85,14 +87,16 @@ const runwayAPI = async (req, res) => {
     }
     //console.log(`station`, station);
     const metarUrl = createMetarUrl(metarProvider, station.icao_code);
+    const metarUrlBackup = createMetarUrl("checkwx", station.icao_code);
     //console.debug(`Fetching METAR data from: ${metarUrl}`);
     let metar = await downloadFile(metarUrl);
-    //console.debug(`METAR data for ${icao.toUpperCase()}:`, metar);
+    // console.debug(`METAR data for ${icao.toUpperCase()}:`, metar);
     if (!metar.trim()) {
-      console.error(`Can't find airport ${icao.toUpperCase()} metar data. Response: ${metar}`);
-      metar = `${icao.toUpperCase()} 000000Z AUTO 00000KT 9999 0/0 Q1013 `;
+      console.error(`Can't find airport ${icao.toUpperCase()} metar data. Trying backup source: checkwx`);
+      const metarBackup = await downloadFile(metarUrlBackup);
+      metar = JSON.parse(metarBackup).data[0];
     }
-
+    //console.log(metar);
     const metarData = metarParser(metar.trim());
     //console.debug(`METAR data for ${icao.toUpperCase()}:`, metarData);
 
