@@ -16,8 +16,8 @@ const downloadFile = async (url, config = {}) => {
       transformResponse: [(data) => data],
       ...config,
     });
-    // console.debug(`Downloaded ${url} - status: ${res.status}`);
-    // console.debug(res.data);
+    //console.debug(`Downloaded ${url} - status: ${res.status}`);
+    //console.debug(res.data);
     return res.data;
   } catch (err) {
     throw err;
